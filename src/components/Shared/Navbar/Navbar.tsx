@@ -15,7 +15,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="border bg-[#6265da] shadow-dark-mild lg:flex-wrap lg:justify-start lg:py-4">
+    <nav className="border bg-[#0E111B] shadow-dark-mild lg:flex-wrap lg:justify-start lg:py-4">
       <Container>
         <div className="flex w-full flex-wrap items-center justify-between">
         

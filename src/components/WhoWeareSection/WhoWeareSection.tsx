@@ -1,9 +1,17 @@
 import { FaPhoneAlt } from "react-icons/fa";
 import { FaAward } from "react-icons/fa"; // Example icon
-
+import { BsCheck2Circle } from "react-icons/bs";
 const WhoWeareSection = () => {
+  const features = [
+    "Over 150,000 Cars Cleaned",
+    "State-of-the-Art Equipment",
+    "Eco-Friendly Products",
+    "Experienced Technicians",
+    "Affordable Pricing",
+    "Convenient Location",
+  ];
   return (
-    <div className="p-4">
+    <div className="p-4 py-12">
       <div className="flex flex-col md:flex-row">
         <div className="w-full md:w-[40%] relative overflow-hidden mb-4 md:mb-0">
           <img
@@ -15,7 +23,7 @@ const WhoWeareSection = () => {
           <div className="absolute border bg-white w-[100px] h-[80px] md:w-[140px] md:h-[125px] top-2 left-2 md:top-4 md:left-4">
             <div className="flex flex-col justify-center items-center h-full">
               <span>
-                <FaAward className="text-xl md:text-2xl text-[#0068d8]" />{" "}
+                <FaAward className="text-xl md:text-4xl text-[#0068d8]" />{" "}
                 {/* Replace with your preferred icon */}
               </span>
               <h3 className="text-lg font-bold">22 +</h3>
@@ -37,31 +45,31 @@ const WhoWeareSection = () => {
             <h2 className="text-sm md:text-base text-[#0068d8] font-bold leading-[1.1em] tracking-[-0.2px]">
               Who we are?
             </h2>
-            <h2 className="text-2xl md:text-[52px] font-bold leading-[1.1em] tracking-[-0.2px] mt-2">
+            <h2 className="text-2xl md:text-[52px] text-[#0e111b] font-bold leading-[1.1em] tracking-[-0.2px] mt-2">
               Professional Car Wash <br className="hidden md:block" /> and
               Detailing Center
             </h2>
 
-            <p className="text-sm md:text-base mt-4">
+            <p className="text-xs md:text-xs lg:text-sm mt-4 text-[#424649]">
               We are a dedicated team of professionals providing top-quality car
               wash and detailing services. Our mission is to make your vehicle
               shine like new, with attention to detail and customer satisfaction
               at the forefront.
             </p>
 
-            <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-4">
-              <li>Over 150,000 Cars Cleaned</li>
-              <li>State-of-the-Art Equipment</li>
-              <li>Eco-Friendly Products</li>
-              <li>Experienced Technicians</li>
-              <li>Affordable Pricing</li>
-              <li>Convenient Location</li>
+            <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-4 text-[#424649]">
+              {features?.map((item, index) => (
+                <li key={index} className="flex flex-row items-center gap-2">
+                  <BsCheck2Circle className="text-[#0068d8] text-lg" />
+                  <p className="text-sm">{item}</p>
+                </li>
+              ))}
             </ul>
 
-            <hr className="my-4 border-t border-blue-500" />
+            <hr className="my-4 border-t border-[#424649]" />
 
             <div className="flex flex-col md:flex-row gap-4">
-              <button className="bg-[#0068d8] py-3 px-5 md:py-5 md:px-7 text-white text-sm md:text-base">
+            <button className="bg-[#0068d8] hover:bg-[#1a77dc] py-1 px-5 md:py-1 md:px-7 text-white text-sm md:text-base hover:text-xs uppercase hover:w-44 hover:h-12 ">
                 More About Us
               </button>
               <div className="flex items-center gap-4 text-sm md:text-base">

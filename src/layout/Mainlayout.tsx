@@ -7,7 +7,7 @@ const MainLayout = () => {
     return (
         <div className="mx-auto max-w-full  relative">
          <HeaderSection/>
-            <main className='h-screen'>
+            <main className=''>
                 <Outlet />
             </main>
 

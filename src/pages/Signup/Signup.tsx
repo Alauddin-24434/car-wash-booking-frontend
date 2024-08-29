@@ -1,24 +1,41 @@
-import { FormEvent, ChangeEvent, MouseEvent, useState } from 'react';
+import { FormEvent, ChangeEvent, useState } from 'react';
+import './Signup.css';
+import banner2 from '/images/banner2.jpg';
+import { useSignUpMutation } from '../../redux/features/auth/authApi';
+import { Link } from 'react-router-dom'; // Assuming you are using React Router for navigation
 
 // Define the type for form data
 interface FormData {
     name: string;
     email: string;
     password: string;
-    phoneNumber: string;
+    phone: string;
     address: string;
+}
+interface SignupError {
+    data: {
+        status: string;
+        message: string;
+        errors?: {
+            [key: string]: string; // For handling field-specific errors
+        };
+    };
+    status: number;
 }
 
 const Signup = () => {
+    const [signup, { isError, error, isLoading }] = useSignUpMutation();
+  
+
+    // Initialize form data with the provided values
     const [formData, setFormData] = useState<FormData>({
         name: '',
         email: '',
         password: '',
-        phoneNumber: '',
+        phone: '',
         address: '',
     });
 
-    // Change event type for input fields
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData({
@@ -27,173 +44,144 @@ const Signup = () => {
         });
     };
 
-    // Form submission event type
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // Add default role here
         const userData = { ...formData, role: 'user' };
-
-        // Perform form submission logic here, such as sending `userData` to your backend
-        console.log('Form submitted:', userData);
+       
+        signup(userData)
+           
     };
 
     return (
-        <div>
-            <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
-          
-                   
-                    <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
-                        <div className="w-64">
-                            <div>
-                                <h1 className="text-2xl font-semibold">Sign Up</h1>
-                            </div>
-                            <form onSubmit={handleSubmit} className="divide-y divide-gray-200">
-                                <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
-                                    <div className="relative">
-                                        <input
-                                            autoComplete="off"
-                                            id="name"
-                                            name="name"
-                                            type="text"
-                                            value={formData.name}
-                                            onChange={handleChange}
-                                            className="peer placeholder-transparent h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:border-rose-600"
-                                            placeholder="Name"
-                                        />
-                                        <label
-                                            htmlFor="name"
-                                            className="absolute left-0 -top-3.5 text-gray-600 text-sm peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-440 peer-placeholder-shown:top-2 transition-all peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm"
-                                        >
-                                            Name
-                                        </label>
-                                    </div>
-                                    <div className="relative">
-                                        <input
-                                            autoComplete="off"
-                                            id="email"
-                                            name="email"
-                                            type="email"
-                                            value={formData.email}
-                                            onChange={handleChange}
-                                            className="peer placeholder-transparent h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:border-rose-600"
-                                            placeholder="Email address"
-                                        />
-                                        <label
-                                            htmlFor="email"
-                                            className="absolute left-0 -top-3.5 text-gray-600 text-sm peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-440 peer-placeholder-shown:top-2 transition-all peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm"
-                                        >
-                                            Email Address
-                                        </label>
-                                    </div>
-                                    <div className="relative">
-                                        <input
-                                            autoComplete="off"
-                                            id="password"
-                                            name="password"
-                                            type="password"
-                                            value={formData.password}
-                                            onChange={handleChange}
-                                            className="peer placeholder-transparent h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:border-rose-600"
-                                            placeholder="Password"
-                                        />
-                                        <label
-                                            htmlFor="password"
-                                            className="absolute left-0 -top-3.5 text-gray-600 text-sm peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-440 peer-placeholder-shown:top-2 transition-all peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm"
-                                        >
-                                            Password
-                                        </label>
-                                    </div>
-                                    <div className="relative">
-                                        <input
-                                            autoComplete="off"
-                                            id="phoneNumber"
-                                            name="phoneNumber"
-                                            type="text"
-                                            value={formData.phoneNumber}
-                                            onChange={handleChange}
-                                            className="peer placeholder-transparent h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:border-rose-600"
-                                            placeholder="Phone Number"
-                                        />
-                                        <label
-                                            htmlFor="phoneNumber"
-                                            className="absolute left-0 -top-3.5 text-gray-600 text-sm peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-440 peer-placeholder-shown:top-2 transition-all peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm"
-                                        >
-                                            Phone Number
-                                        </label>
-                                    </div>
-                                    <div className="relative">
-                                        <input
-                                            autoComplete="off"
-                                            id="address"
-                                            name="address"
-                                            type="text"
-                                            value={formData.address}
-                                            onChange={handleChange}
-                                            className="peer placeholder-transparent h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:border-rose-600"
-                                            placeholder="Address"
-                                        />
-                                        <label
-                                            htmlFor="address"
-                                            className="absolute left-0 -top-3.5 text-gray-600 text-sm peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-440 peer-placeholder-shown:top-2 transition-all peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm"
-                                        >
-                                            Address
-                                        </label>
-                                    </div>
-                                    <div className="relative">
-                                        <button type="submit" className="bg-cyan-500 text-white rounded-md px-4 py-2">Sign Up</button>
-                                    </div>
+        <div className="relative min-h-screen flex">
+            <div className="flex flex-col sm:flex-row items-center md:items-start sm:justify-center md:justify-start flex-auto min-w-0 bg-white">
+                <div className="sm:w-1/2 xl:w-2/5 h-full hidden md:flex flex-auto items-center justify-start p-10 overflow-hidden bg-purple-900 text-white bg-no-repeat bg-cover relative"
+                    style={{
+                        backgroundImage: `url(${banner2})`,
+                    }}>
+                    <div className="absolute bg-gradient-to-b from-blue-900 to-gray-900 opacity-75 inset-0 z-0"></div>
+                    <div className="absolute triangle min-h-screen right-0 w-16"></div>
+                    <div className="w-full max-w-md z-10">
+                        <div className="sm:text-4xl xl:text-5xl font-bold leading-tight mb-6">
+                            Professional Car Wash and Detailing Center
+                        </div>
+                        <div className="sm:text-sm xl:text-md text-gray-200 font-normal">
+                            We are a dedicated team of professionals providing top-quality car wash and detailing services. Our mission is to make your vehicle shine like new, with attention to detail and customer satisfaction at the forefront.
+                        </div>
+                    </div>
+                    <ul className="circles">
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                    </ul>
+                </div>
+                <div className="md:flex md:items-center md:justify-center w-full sm:w-auto md:h-full md:w-2/5 xl:w-2/5 p-8 md:p-10 lg:p-14 sm:rounded-lg md:rounded-none bg-white">
+                    <div className="max-w-md w-full space-y-8">
+                        <div className="text-center">
+                            <h2 className="mt-6 text-3xl font-bold text-gray-900">
+                                Welcome Back!
+                            </h2>
+                            <p className="mt-2 text-sm text-gray-500">Please sign up to create your account</p>
+                        </div>
+                        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+                            <div className="rounded-md shadow-sm -space-y-px">
+                                <div>
+                                    <label htmlFor="name" className="sr-only">Name</label>
+                                    <input
+                                        id="name"
+                                        name="name"
+                                        type="text"
+                                        required
+                                        className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                                        placeholder="Name"
+                                        value={formData.name}
+                                        onChange={handleChange}
+                                    />
                                 </div>
-                            </form>
-                        </div>
-
-                        <div className="w-full flex justify-center mt-6">
-                            <button className="flex items-center bg-white border border-gray-300 rounded-lg shadow-md px-6 py-2 text-sm font-medium text-gray-800 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                                <svg
-                                    className="h-6 w-6 mr-2"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    xmlnsXlink="http://www.w3.org/1999/xlink"
-                                    width="800px"
-                                    height="800px"
-                                    viewBox="-0.5 0 48 48"
-                                    version="1.1"
+                                <div>
+                                    <label htmlFor="email" className="sr-only">Email</label>
+                                    <input
+                                        id="email"
+                                        name="email"
+                                        type="email"
+                                        required
+                                        className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                                        placeholder="Email"
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                <div>
+                                    <label htmlFor="password" className="sr-only">Password</label>
+                                    <input
+                                        id="password"
+                                        name="password"
+                                        type="password"
+                                        required
+                                        className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                                        placeholder="Password"
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                <div>
+                                    <label htmlFor="phone" className="sr-only">Phone Number</label>
+                                    <input
+                                        id="phone"
+                                        name="phone"
+                                        type="text"
+                                        required
+                                        className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                                        placeholder="Phone Number"
+                                        value={formData.phone}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                                <div>
+                                    <label htmlFor="address" className="sr-only">Address</label>
+                                    <input
+                                        id="address"
+                                        name="address"
+                                        type="text"
+                                        required
+                                        className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                                        placeholder="Address"
+                                        value={formData.address}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            </div>
+                            <div>
+                                <button
+                                    className="w-full py-4 text-xl font-medium text-center text-white rounded-lg transition duration-200 bg-green-600 hover:bg-green-700 ease"
+                                    disabled={isLoading}
                                 >
-                                    <title>Google-color</title>
-                                    <desc>Created with Sketch.</desc>
-                                    <defs></defs>
-                                    <g id="Icons" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-                                        <g id="Color-" transform="translate(-401.000000, -860.000000)">
-                                            <g id="Google" transform="translate(401.000000, 860.000000)">
-                                                <path
-                                                    d="M9.82727273,24 C9.82727273,22.4757333 10.0804318,21.0144 10.5322727,19.6437333 L2.62345455,13.6042667 C1.08206818,16.7338667 0.213636364,20.2602667 0.213636364,24 C0.213636364,27.7365333 1.081,31.2608 2.62025,34.3882667 L10.5247955,28.3370667 C10.0772273,26.9728 9.82727273,25.5168 9.82727273,24"
-                                                    id="Fill-1"
-                                                    fill="#FBBC05"
-                                                ></path>
-                                                <path
-                                                    d="M23.7136364,10.1333333 C27.025,10.1333333 30.0159091,11.3066667 32.3659091,13.2266667 L39.2022727,6.4 C35.0363636,2.77333333 29.6954545,0.533333333 23.7136364,0.533333333 C14.4268636,0.533333333 6.44540909,5.84426667 2.62345455,13.6042667 L10.5322727,19.6437333 C13.828,14.8906667 18.7712727,11.9408 23.7136364,10.1333333"
-                                                    id="Fill-2"
-                                                    fill="#FF6D01"
-                                                ></path>
-                                                <path
-                                                    d="M10.5322727,19.6437333 C13.828,14.8906667 18.7712727,11.9408 23.7136364,10.1333333 C27.025,10.1333333 30.0159091,11.3066667 32.3659091,13.2266667 L39.2022727,6.4 C35.0363636,2.77333333 29.6954545,0.533333333 23.7136364,0.533333333 C14.4268636,0.533333333 6.44540909,5.84426667 2.62345455,13.6042667 L10.5322727,19.6437333"
-                                                    id="Fill-3"
-                                                    fill="#FF3D00"
-                                                ></path>
-                                                <path
-                                                    d="M9.82727273,24 C9.82727273,22.4757333 10.0804318,21.0144 10.5322727,19.6437333 L2.62345455,13.6042667 C1.08206818,16.7338667 0.213636364,20.2602667 0.213636364,24 C0.213636364,27.7365333 1.081,31.2608 2.62025,34.3882667 L10.5247955,28.3370667 C10.0772273,26.9728 9.82727273,25.5168 9.82727273,24"
-                                                    id="Fill-4"
-                                                    fill="#4CAF50"
-                                                ></path>
-                                            </g>
-                                        </g>
-                                    </g>
-                                </svg>
-                                Sign up with Google
-                            </button>
-                        </div>
+                                    {isLoading ? 'Signing Up...' : 'Submit'}
+                                </button>
+                            </div>
+                        </form>
+                     
+                        {isError && error && (
+                            <p className="text-red-500 mt-4 text-center">
+                                {(error as SignupError).data.message || "An unexpected error occurred. Please try again."}
+                            </p>
+                        )}
+
+                            <div className="text-center mt-4">
+                                <p className="text-black">If already have an account <Link to="/login" className="text-blue-600 hover:underline">login here</Link>.</p>
+                            </div>
+                       
                     </div>
                 </div>
             </div>
-       
+        </div>
     );
 };
 

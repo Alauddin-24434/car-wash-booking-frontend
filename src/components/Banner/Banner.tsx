@@ -17,8 +17,20 @@ const Banner = () => {
                 {/* Overlay with opacity */}
                 <div className="absolute inset-0 bg-black opacity-50 z-0"></div>
             </div>
-
+            <ul className="circles">
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
             {/* Content */}
+      
         <div className='ml-[136px] relative z-10'>
 
     

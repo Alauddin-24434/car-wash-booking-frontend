@@ -1,4 +1,4 @@
-import React from 'react';
+
 import Container from '../Shared/Container/Container';
 
 // Sample review data

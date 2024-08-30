@@ -9,7 +9,7 @@ interface AddServiceModalProps {
 }
 
 const AddServiceModal: React.FC<AddServiceModalProps> = ({ toggleModel }) => {
-  const [addService, { data, isError, error, isLoading }] = useAddServiceMutation();
+  const [addService] = useAddServiceMutation();
 
   const token = useAppSelector(useCurrentToken);
   // State for form fields

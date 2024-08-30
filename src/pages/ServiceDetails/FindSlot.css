@@ -1,0 +1,64 @@
+/* FindSlot.css */
+
+.slot-selection {
+    display: flex;
+    flex-direction: row; /* Layout in a row for larger screens */
+    padding: 40px 0px;
+    /* background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+
+  }
+  
+  .calendar-container {
+    flex-shrink: 0; /* Prevent calendar from shrinking */
+    margin-right: 20px; /* Space between calendar and table */
+    width: 300px; /* Adjust as needed */
+    height: auto; /* Adjust if you want a fixed height */
+  }
+  
+  .react-calendar {
+    width: 100%; /* Full width of the container */
+    height: 311px; /* Fixed height for the calendar */
+    border: 1px solid #ddd; /* Border color */
+    border-radius: 4px; /* Rounded corners */
+    background-color: #ffffff; /* Background color */
+  }
+  
+  .available-time-slots {
+    flex-grow: 1; /* Allow time slots to take available space */
+  }
+  
+  .selected-date {
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  p {
+    font-size: 16px;
+    color: #333;
+  }
+  
+  input[type="checkbox"] {
+    cursor: pointer;
+  }
+  
+  @media (max-width: 768px) {
+    .slot-selection {
+      flex-direction: column; /* Stack vertically on smaller screens */
+    }
+  
+    .calendar-container {
+      margin-right: 0;
+      margin-bottom: 20px; /* Space below calendar on small screens */
+      width: 100%; /* Full width on small screens */
+    }
+  
+    .selected-date p {
+      font-size: 14px;
+    }
+  }
+  

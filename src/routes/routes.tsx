@@ -8,6 +8,9 @@ import DashboardLayout from "../layout/DashboardLayout";
 import DashboardPage from "../pages/DashboardPage/DashboardPage";
 import AddService from "../pages/AddService/AddService";
 import ServiceManagement from "../pages/ServiceManagement/ServiceManagement";
+import ProtectedRoute from "../layout/ProtectedRoute";
+import Services from "../pages/Services/Services";
+import ServiceDetails from "../pages/ServiceDetails/ServiceDetails";
 
 export const router = createBrowserRouter([
   {
@@ -17,6 +20,14 @@ export const router = createBrowserRouter([
       {
         path: '/',
         element: <App />
+      },
+      {
+        path: '/services',
+        element: <Services/>
+      },
+      {
+        path: '/serviceDetails',
+        element: <ServiceDetails/>
       }
     ]
   },
@@ -30,7 +41,7 @@ export const router = createBrowserRouter([
   },
   {
     path: '/dashboard',
-    element: <DashboardLayout />,
+    element: <ProtectedRoute><DashboardLayout /></ProtectedRoute>,
     children: [
       {
         path: '/dashboard',

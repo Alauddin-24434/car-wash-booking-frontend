@@ -7,10 +7,11 @@ import Login from "../pages/Login/Login";
 import DashboardLayout from "../layout/DashboardLayout";
 import DashboardPage from "../pages/DashboardPage/DashboardPage";
 import AddService from "../pages/AddService/AddService";
-import ServiceManagement from "../pages/ServiceManagement/ServiceManagement";
+import ServiceManagement from "../pages/DashboardPage/ServiceManagement/ServiceManagement";
 import ProtectedRoute from "../layout/ProtectedRoute";
 import Services from "../pages/Services/Services";
 import ServiceDetails from "../pages/ServiceDetails/ServiceDetails";
+import BookingPage from "../pages/BookingPage/BookingPage";
 
 export const router = createBrowserRouter([
   {
@@ -26,8 +27,12 @@ export const router = createBrowserRouter([
         element: <Services/>
       },
       {
-        path: '/serviceDetails',
+        path: '/serviceDetails/:id',
         element: <ServiceDetails/>
+      },
+      {
+        path: '/bookingPage',
+        element: <BookingPage/>
       }
     ]
   },

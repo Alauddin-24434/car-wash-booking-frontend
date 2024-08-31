@@ -1,12 +1,18 @@
 
 import { IoMdTime } from 'react-icons/io';
+import { useNavigate } from 'react-router-dom';
 
 
   
 const ServiceCard = ({ service }:any) => {
+
+const navigate=useNavigate()
+  const handleNavigate =()=>{
+navigate(`/serviceDetails/${service._id}`)
+  }
   return (
     <article className="rounded-xl bg-white p-3 shadow-lg hover:shadow-xl hover:transform hover:scale-105 duration-300">
-      <div className="relative flex items-end overflow-hidden rounded-xl">
+      <div onClick={handleNavigate} className="relative flex items-end overflow-hidden rounded-xl">
         <img src={service.image} alt={service.name} className="w-full h-48 object-cover"/>
         <div className="flex items-center space-x-1.5 rounded-lg bg-blue-500 px-4 py-1.5 text-white duration-100 hover:bg-blue-600"></div>
       </div>

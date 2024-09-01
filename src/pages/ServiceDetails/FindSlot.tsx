@@ -3,6 +3,9 @@ import { useState, useEffect } from "react"; // Import React hooks
 import Calendar from "react-calendar"; // Import Calendar component from react-calendar
 import "./FindSlot.css"; // Import custom CSS for styling
 import { useGetAvailableSlotsQuery } from "../../redux/features/slot/slotApi"; // Import your API hook
+import { useAppDispatch,  } from "../../redux/hooks";
+import { setSelectedSlots } from "../../redux/features/booking/bookingSlice"; // Adjust import as needed
+import { useNavigate } from "react-router-dom";
 
 // Define Slot and Error interfaces
 interface Slot {
@@ -26,10 +29,10 @@ type Value = ValuePiece | [ValuePiece, ValuePiece]; // Type for single date or d
 
 export const FindSlot = ({ serviceId }: { serviceId: string }) => {
   const [value, onChange] = useState<Value>(new Date()); // State to manage selected date
-  const [selectedSlotsId, setSelectedSlotsId] = useState<Set<string>>(
-    new Set()
-  ); // State to manage selected time slots
+  const [selectedSlotsId, setSelectedSlotsId] = useState<string[]>([]); // State to manage selected time slots
   const [availableSlots, setAvailableSlots] = useState<Slot[]>([]); // State to manage available time slots
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   // Convert selected date to string format YYYY-MM-DD
   const formatDate = (date: Date) => {
@@ -46,19 +49,17 @@ export const FindSlot = ({ serviceId }: { serviceId: string }) => {
   const date = formattedDate?.toString();
 
   // Fetch available slots based on serviceId and selected date
-  const {
-    data: slots,
-    error,
-    isLoading,
-  } = useGetAvailableSlotsQuery({ serviceId, date });
+  const { data: slots, error, isLoading } = useGetAvailableSlotsQuery({
+    serviceId,
+    date,
+  });
 
   // Update available slots when the API response changes
   useEffect(() => {
     if (slots) {
       setAvailableSlots(slots.data);
-      setSelectedSlotsId(new Set()); // Clear selected slots when new data is fetched
     }
-  }, [slots, date]); // Include `date` as a dependency to react to date changes
+  }, [slots, date]);
 
   // Handle checkbox change to select or deselect time slots
   const handleCheckboxChange = (
@@ -66,32 +67,22 @@ export const FindSlot = ({ serviceId }: { serviceId: string }) => {
     isBooked: "available" | "booked"
   ) => {
     if (isBooked === "available") {
-      setSelectedSlotsId((prev) => {
-        const updated = new Set(prev);
-        if (updated.has(slotId)) {
-          updated.delete(slotId); // Deselect slot if it's already selected
-        } else {
-          updated.add(slotId); // Select slot if it's not selected
-        }
-        return updated;
-      });
+      setSelectedSlotsId((prev) =>
+        prev.includes(slotId)
+          ? prev.filter((id) => id !== slotId) // Deselect slot
+          : [...prev, slotId] // Select slot
+      );
     }
   };
 
-  // Check if any slots are selected to enable the book button
-  const isConfirmEnabled = selectedSlotsId.size > 0;
-
+  // Save final selection to Redux state when button is clicked
   const handleSubmitedSlots = () => {
-    const slotData = {
-      selectedSlotsId// Make sure this is the correct state or variable
-    };
-  
-  
-  
-    // Use destructured value
-    console.log('Selected Slot IDs:',  slotData);
+    dispatch(setSelectedSlots({ serviceId, slotIds: selectedSlotsId }));
+    navigate('/booking');
   };
-  
+
+  // Check if any slots are selected to enable the book button
+  const isConfirmEnabled = selectedSlotsId.length > 0;
 
   return (
     <div className="slot-selection">
@@ -107,8 +98,7 @@ export const FindSlot = ({ serviceId }: { serviceId: string }) => {
         {isLoading && <p>Loading slots...</p>}
         {error && (
           <p className="text-red-500 h-[245px] border flex justify-center items-center">
-            {(error as ApiError).data?.message}{" "}
-            {/* Casting error to ApiError to access message */}
+            {(error as ApiError).data?.message}
           </p>
         )}
         {!error && availableSlots.length > 0 && (
@@ -134,7 +124,6 @@ export const FindSlot = ({ serviceId }: { serviceId: string }) => {
                       slot.isBooked === "available" ? "pointer" : "not-allowed",
                   }}
                 >
-                  {/* selected time */}
                   <td className="p-3 border-b border-gray-300 text-center">
                     {slot.startTime} - {slot.endTime}
                   </td>
@@ -154,7 +143,7 @@ export const FindSlot = ({ serviceId }: { serviceId: string }) => {
                   <td className="p-3 border-b border-gray-300 text-center">
                     <input
                       type="checkbox"
-                      checked={selectedSlotsId.has(slot._id)}
+                      checked={selectedSlotsId.includes(slot._id)}
                       onChange={() =>
                         handleCheckboxChange(slot._id, slot.isBooked)
                       }
@@ -178,10 +167,10 @@ export const FindSlot = ({ serviceId }: { serviceId: string }) => {
                 ? "bg-blue-500 text-white hover:bg-blue-700"
                 : "bg-gray-500 text-gray-300 cursor-not-allowed"
             }`}
-            onClick={handleSubmitedSlots}>Book This Service
+            onClick={handleSubmitedSlots}
+          >
+            Book This Service
           </button>
-
-        
         </div>
       </div>
     </div>

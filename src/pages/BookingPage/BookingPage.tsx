@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { FaRegClock } from "react-icons/fa";
+import { useAppSelector } from "../../redux/hooks";
+import { selectSelectedSlots } from "../../redux/features/booking/bookingSlice";
+
 
 // Fake JSON data
 const fakeSelectedService = {
@@ -17,6 +20,11 @@ const fakeApiResponse = {
 };
 
 const BookingPage = () => {
+
+  const selectedSlotIds = useAppSelector(selectSelectedSlots);
+
+  console.log("selectedSlotIds",selectedSlotIds)
+
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
 
@@ -45,6 +53,7 @@ const BookingPage = () => {
       {/* Left Side: Service and Time Slot */}
       <div className="w-full md:w-1/2 bg-white p-6 shadow-lg rounded-lg">
         <h2 className="text-2xl font-bold mb-4">Selected Service</h2>
+     
         <div className="flex items-center gap-4 mb-4">
           <img src={fakeSelectedService.image} alt={fakeSelectedService.name} className="w-24 h-24 object-cover rounded-md" />
           <div>

@@ -5,6 +5,7 @@ import { useLoginMutation } from '../../redux/features/auth/authApi';
 import { verifyToken } from '../../utils/VerifyToken';
 import { useAppDispatch } from '../../redux/hooks';
 import { setUser } from '../../redux/features/auth/authSlice';
+import { useNavigate } from 'react-router-dom';
 interface FormData {
 
     email: string;
@@ -39,7 +40,7 @@ const Login = () => {
             [name]: value,
         });
     };
-
+const navigate= useNavigate()
     // Form submission event type
     const handleSubmit =async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -49,6 +50,7 @@ const Login = () => {
      const response= await login(userData).unwrap();
      const user= verifyToken(response.data.accessToken);
      dispatch(setUser({user:user, token:response.data.accessToken}));
+     navigate('/dashboard')
    
     };
 

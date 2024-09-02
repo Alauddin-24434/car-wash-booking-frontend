@@ -1,40 +1,36 @@
 import "react-calendar/dist/Calendar.css"; // Import Calendar CSS
-import { useState, useEffect } from "react"; // Import React hooks
-import Calendar from "react-calendar"; // Import Calendar component from react-calendar
-import "./FindSlot.css"; // Import custom CSS for styling
-import { useGetAvailableSlotsQuery } from "../../redux/features/slot/slotApi"; // Import your API hook
-import { useAppDispatch,  } from "../../redux/hooks";
-import { setSelectedSlots } from "../../redux/features/booking/bookingSlice"; // Adjust import as needed
+import { useState, useEffect } from "react";
+import Calendar from "react-calendar";
+import { useGetAvailableSlotsQuery } from "../../redux/features/slot/slotApi";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import {  SelectedSlot, selectSelectedSlots, toggleSlot } from "../../redux/features/booking/bookingSlice";
 import { useNavigate } from "react-router-dom";
+import './FindSlot.css'
 
-// Define Slot and Error interfaces
 interface Slot {
-  _id: string; // Unique identifier for each slot
-  time: string; // Time of the slot, e.g., "09:00 AM"
-  startTime: string; // Start time of the slot, e.g., "09:00"
-  endTime: string; // End time of the slot, e.g., "10:00"
-  isBooked: "available" | "booked"; // Booking status of the slot
-}
-
-interface ErrorData {
-  message: string; // Error message
+  _id: string;
+  time: string;
+  startTime: string;
+  endTime: string;
+  isBooked: "available" | "booked";
 }
 
 interface ApiError {
-  data: ErrorData; // Error details
+  data?: {
+    message?: string;
+  };
 }
 
-type ValuePiece = Date | null; // Type for date or null
-type Value = ValuePiece | [ValuePiece, ValuePiece]; // Type for single date or date range
+type ValuePiece = Date | null;
+type Value = ValuePiece | [ValuePiece, ValuePiece];
 
-export const FindSlot = ({ serviceId }: { serviceId: string }) => {
-  const [value, onChange] = useState<Value>(new Date()); // State to manage selected date
-  const [selectedSlotsId, setSelectedSlotsId] = useState<string[]>([]); // State to manage selected time slots
-  const [availableSlots, setAvailableSlots] = useState<Slot[]>([]); // State to manage available time slots
+export const FindSlot: React.FC<{ serviceId: string, serviceName: string }> = ({ serviceId, serviceName }) => {
+  const [value, onChange] = useState<Value>(new Date());
+  const [availableSlots, setAvailableSlots] = useState<Slot[]>([]);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const selectedSlots = useAppSelector(selectSelectedSlots);
 
-  // Convert selected date to string format YYYY-MM-DD
   const formatDate = (date: Date) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -48,41 +44,47 @@ export const FindSlot = ({ serviceId }: { serviceId: string }) => {
 
   const date = formattedDate?.toString();
 
-  // Fetch available slots based on serviceId and selected date
   const { data: slots, error, isLoading } = useGetAvailableSlotsQuery({
     serviceId,
     date,
   });
 
-  // Update available slots when the API response changes
   useEffect(() => {
     if (slots) {
       setAvailableSlots(slots.data);
     }
-  }, [slots, date]);
+  }, [slots]);
 
-  // Handle checkbox change to select or deselect time slots
   const handleCheckboxChange = (
     slotId: string,
-    isBooked: "available" | "booked"
+    isBooked: "available" | "booked",
+    startTime: string,
+    endTime: string
   ) => {
     if (isBooked === "available") {
-      setSelectedSlotsId((prev) =>
-        prev.includes(slotId)
-          ? prev.filter((id) => id !== slotId) // Deselect slot
-          : [...prev, slotId] // Select slot
-      );
+      const slot: SelectedSlot = {
+        serviceId,
+        slotId,
+        serviceName,
+        startTime,
+        endTime,
+        date: formattedDate || "",
+        status: "upcoming",
+      };
+
+      // Dispatch action to toggle slot
+      dispatch(toggleSlot(slot));
     }
   };
 
-  // Save final selection to Redux state when button is clicked
-  const handleSubmitedSlots = () => {
-    dispatch(setSelectedSlots({ serviceId, slotIds: selectedSlotsId }));
+  const handleNavigate = () => {
     navigate('/booking');
   };
+  // const handleClearSlots = () => {
+  //   dispatch(clearSelectedSlots());
+  // };
 
-  // Check if any slots are selected to enable the book button
-  const isConfirmEnabled = selectedSlotsId.length > 0;
+  const isConfirmEnabled = selectedSlots.length > 0;
 
   return (
     <div className="slot-selection">
@@ -143,16 +145,11 @@ export const FindSlot = ({ serviceId }: { serviceId: string }) => {
                   <td className="p-3 border-b border-gray-300 text-center">
                     <input
                       type="checkbox"
-                      checked={selectedSlotsId.includes(slot._id)}
+                      checked={selectedSlots.some((selected) => selected.slotId === slot._id)}
                       onChange={() =>
-                        handleCheckboxChange(slot._id, slot.isBooked)
+                        handleCheckboxChange(slot._id, slot.isBooked, slot.startTime, slot.endTime)
                       }
                       disabled={slot.isBooked === "booked"}
-                      className={`cursor-pointer ${
-                        slot.isBooked === "booked"
-                          ? "text-gray-400 cursor-not-allowed"
-                          : ""
-                      }`}
                     />
                   </td>
                 </tr>
@@ -167,12 +164,20 @@ export const FindSlot = ({ serviceId }: { serviceId: string }) => {
                 ? "bg-blue-500 text-white hover:bg-blue-700"
                 : "bg-gray-500 text-gray-300 cursor-not-allowed"
             }`}
-            onClick={handleSubmitedSlots}
+            onClick={handleNavigate}
+            disabled={!isConfirmEnabled}
           >
-            Book This Service
+            Go To Booking Page
           </button>
+          {/* <button
+            className="py-2 px-4 font-bold rounded bg-red-500 text-white hover:bg-red-700 mt-2"
+            onClick={handleClearSlots}
+          >
+            Clear Selected Slots
+          </button> */}
         </div>
-      </div>
+        </div>
+    
     </div>
   );
 };

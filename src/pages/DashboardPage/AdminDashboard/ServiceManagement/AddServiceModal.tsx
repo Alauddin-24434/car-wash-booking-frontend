@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
-import { useAddServiceMutation } from '../../../redux/features/service/serviceApi';
-import { useAppSelector } from '../../../redux/hooks';
-import { useCurrentToken } from '../../../redux/features/auth/authSlice';
+import { useAddServiceMutation } from '../../../../redux/features/service/serviceApi';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import app from '../../../firebase/Firebase.config';
+import app from '../../../../firebase/Firebase.config';
 import { toast } from 'react-toastify';
 
 const storage = getStorage(app);
@@ -21,8 +19,7 @@ const AddServiceModal: React.FC<AddServiceModalProps> = ({ toggleModel }) => {
   const [duration, setDuration] = useState('');
   const [price, setPrice] = useState('');
   const [image, setImage] = useState<string>('');
-  const token = useAppSelector(useCurrentToken);
-
+  
   // Handle file upload
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
@@ -91,13 +88,13 @@ const AddServiceModal: React.FC<AddServiceModalProps> = ({ toggleModel }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="flex flex-col w-11/12 sm:w-5/6 lg:w-1/2 max-w-2xl mx-auto rounded-lg border border-gray-300 shadow-xl bg-white">
+      <div className="flex flex-col w-10/12 sm:w-4/6 lg:w-1/3 max-w-md mx-auto rounded-lg border border-gray-300 shadow-xl bg-white">
         {/* Header */}
-        <div className="flex justify-between items-center p-6 bg-white border-b border-gray-200 rounded-tl-lg rounded-tr-lg">
+        <div className="flex justify-between items-center p-4 bg-white border-b border-gray-200 rounded-t-lg">
           <p className="font-semibold text-gray-800">Add a Service {percent}</p>
           <button onClick={toggleModel} aria-label="Close modal">
             <svg
-              className="w-6 h-6 text-gray-600 hover:text-gray-900 transition"
+              className="w-5 h-5 text-gray-600 hover:text-gray-900 transition"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -114,7 +111,7 @@ const AddServiceModal: React.FC<AddServiceModalProps> = ({ toggleModel }) => {
         </div>
 
         {/* Body */}
-        <form onSubmit={handleSubmit} className="flex flex-col px-6 py-5 bg-gray-50">
+        <form onSubmit={handleSubmit} className="flex flex-col px-4 py-4 bg-gray-50">
           {/* Name Field */}
           <label className="mb-2 font-semibold text-gray-700" htmlFor="name">Name</label>
           <input
@@ -123,7 +120,7 @@ const AddServiceModal: React.FC<AddServiceModalProps> = ({ toggleModel }) => {
             placeholder="Service Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="p-4 mb-5 bg-white border border-gray-200 rounded shadow-sm"
+            className="p-3 mb-4 bg-white border border-gray-200 rounded shadow-sm"
           />
 
           {/* Description Field */}
@@ -133,7 +130,7 @@ const AddServiceModal: React.FC<AddServiceModalProps> = ({ toggleModel }) => {
             placeholder="Type service description..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="p-4 mb-5 bg-white border border-gray-200 rounded shadow-sm h-36 resize-none"
+            className="p-3 mb-4 bg-white border border-gray-200 rounded shadow-sm h-28 resize-none"
           ></textarea>
 
           {/* Duration Field */}
@@ -141,10 +138,10 @@ const AddServiceModal: React.FC<AddServiceModalProps> = ({ toggleModel }) => {
           <input
             id="duration"
             type="number"
-            placeholder="Service Duration (e.g., 60m)"
+            placeholder="Enter Service Duration number (e.g., 60)"
             value={duration}
             onChange={(e) => setDuration(e.target.value)}
-            className="p-4 mb-5 bg-white border border-gray-200 rounded shadow-sm"
+            className="p-3 mb-4 bg-white border border-gray-200 rounded shadow-sm"
           />
 
           {/* Price Field */}
@@ -155,7 +152,7 @@ const AddServiceModal: React.FC<AddServiceModalProps> = ({ toggleModel }) => {
             placeholder="Enter Price number (e.g., 50)"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
-            className="p-4 mb-5 bg-white border border-gray-200 rounded shadow-sm"
+            className="p-3 mb-4 bg-white border border-gray-200 rounded shadow-sm"
           />
 
           {/* Image Upload Field */}
@@ -165,20 +162,22 @@ const AddServiceModal: React.FC<AddServiceModalProps> = ({ toggleModel }) => {
             type="file"
             accept="image/*"
             onChange={handleFileUpload}
-            className="mb-5"
+            className="mb-4"
           />
 
           <hr />
-          <button type="button" onClick={toggleModel} className="text-gray-600 font-semibold">
-            Cancel
-          </button>
-          <button type="submit" className="px-4 py-2 text-white font-semibold bg-blue-500 rounded hover:bg-blue-600 transition">
-            Save
-          </button>
+          <div className="flex justify-end gap-4">
+            <button type="button" onClick={toggleModel} className="text-gray-600 font-semibold">
+              Cancel
+            </button>
+            <button type="submit" className="px-4 py-2 text-white font-semibold bg-blue-500 rounded hover:bg-blue-600 transition">
+              Save
+            </button>
+          </div>
         </form>
 
         {/* Footer */}
-        <div className="flex justify-between items-center p-5 bg-white border-t border-gray-200 rounded-bl-lg rounded-br-lg">
+        <div className="flex justify-between items-center p-4 bg-white border-t border-gray-200 rounded-b-lg">
           {/* Footer content here if needed */}
         </div>
       </div>

@@ -45,7 +45,7 @@ const ServiceCard = () => {
         <div className="flex flex-col w-full p-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 ">
                 {services.map(service => (
-                    <div key={service.id} className="bg-white border  shadow-lg flex flex-col justify-between gap-y-4 p-4">
+                    <div key={service.id} className="bg-red-500 border  shadow-lg flex flex-col justify-between gap-y-4 p-4">
                         <img
                             className="w-full h-48 object-cover "
                             src={service.imageUrl}

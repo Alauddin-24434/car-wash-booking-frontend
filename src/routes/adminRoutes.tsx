@@ -1,21 +1,24 @@
 import DashboardLayout from "../layout/DashboardLayout";
-import DashboardPage from "../pages/DashboardPage/DashboardPage";
-import ServiceManagement from "../pages/DashboardPage/ServiceManagement/ServiceManagement";
-import AddService from "../pages/AddService/AddService";
+
+import ServiceManagement from "../pages/DashboardPage/AdminDashboard/ServiceManagement/ServiceManagement";
+
 import ProtectedRoute from "../layout/ProtectedRoute";
+import UserManagement from "../pages/UserManagement/UserManagement";
+import SlotManagement from "../pages/DashboardPage/AdminDashboard/SlotManagement/SlotManagement";
+import AdminDashboard from "../pages/DashboardPage/AdminDashboard/AdminDashboard";
 
 export const adminRoutes = [
   {
     path: '/dashboard',
-    element: (
-      <ProtectedRoute role="admin">
-        <DashboardLayout />
-      </ProtectedRoute>
-    ),
+    element: <DashboardLayout />,
     children: [
       {
-        path: '/dashboard',
-        element: <DashboardPage />
+        path: '/dashboard/admin-dashboard',
+        element:   (
+          <ProtectedRoute role="admin">
+            <AdminDashboard/>
+          </ProtectedRoute>
+        )
       },
       {
         path: '/dashboard/service-management',
@@ -26,10 +29,18 @@ export const adminRoutes = [
         )
       },
       {
-        path: '/dashboard/add-service',
+        path: '/dashboard/user-management',
         element: (
           <ProtectedRoute role="admin">
-            <AddService />
+            <UserManagement />
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: '/dashboard/slot-management',
+        element: (
+          <ProtectedRoute role="admin">
+            <SlotManagement />
           </ProtectedRoute>
         )
       }

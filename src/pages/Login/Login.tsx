@@ -3,8 +3,8 @@ import './Login.css';
 import banner2 from '/images/banner2.jpg'
 import { useLoginMutation } from '../../redux/features/auth/authApi';
 import { verifyToken } from '../../utils/VerifyToken';
-import { useAppDispatch } from '../../redux/hooks';
-import { setUser } from '../../redux/features/auth/authSlice';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { setUser, useCurrentToken } from '../../redux/features/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
 interface FormData {
 
@@ -23,6 +23,21 @@ interface ERrorData {
     data: ERrorData;
   }
 const Login = () => {
+
+    const token = useAppSelector(useCurrentToken);
+
+    let user;
+    if (token) {
+      user = verifyToken(token);
+     
+    }
+  
+  
+    const userRole = {
+      ADMIN: 'admin',
+      USER: 'user',
+    };
+
     const [login,{data,isError,error,isLoading}]=useLoginMutation()
     const dispatch= useAppDispatch()
     const [formData, setFormData] = useState<FormData>({
@@ -41,18 +56,35 @@ const Login = () => {
         });
     };
 const navigate= useNavigate()
-    // Form submission event type
-    const handleSubmit =async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        // Add default role here
-        const userData = { ...formData, role: 'user' };
-        
-     const response= await login(userData).unwrap();
-     const user= verifyToken(response.data.accessToken);
-     dispatch(setUser({user:user, token:response.data.accessToken}));
-     navigate('/dashboard')
-   
-    };
+const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    // Add default role here
+    const userData = { ...formData, role: 'user' };
+    
+    try {
+        const response = await login(userData).unwrap();
+        const user = verifyToken(response.data.accessToken);
+
+        // Dispatch the user data and token to Redux
+        dispatch(setUser({ user: user, token: response.data.accessToken }));
+
+        // Role-based navigation using switch statement
+        switch (user.role) {
+            case userRole.ADMIN:
+                navigate('/dashboard/admin-dashboard');
+                break;
+            case userRole.USER:
+                navigate('/dashboard/user-dashboard'); // Adjust this route as needed
+                break;
+            default:
+                navigate('/'); // Default route if the role is unknown
+                break;
+        }
+    } catch (error) {
+        console.error("Login failed:", error);
+    }
+};
+
 
     return (
         <div className="relative min-h-screen flex">

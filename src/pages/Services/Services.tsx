@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Container from "../../components/Shared/Container/Container";
-import ServiceCard from './ServiceCard';
+
 import { useGetAllServicesQuery } from '../../redux/features/service/serviceApi';
+import ServiceCard from './ServiceCard';
 
 interface Service {
   _id: string;

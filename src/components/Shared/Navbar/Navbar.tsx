@@ -1,15 +1,33 @@
-import { Link } from "react-router-dom";
-import logo from "/images/logo.png";
-import { useState } from "react";
-import { menuItems } from "./NavMenuItems";
-import {  FaFacebookF, FaTwitter, FaYoutube, FaClock } from "react-icons/fa";
-import { IoCall } from "react-icons/io5";
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import logo from '/images/logo.png';
+import { menuItems } from './NavMenuItems';
+import { FaFacebookF, FaTwitter, FaYoutube, FaClock } from 'react-icons/fa';
+import { IoCall } from 'react-icons/io5';
+import { FaLocationDot } from 'react-icons/fa6';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { logout, useCurrentToken } from '../../../redux/features/auth/authSlice';
+import { verifyToken } from '../../../utils/VerifyToken';
 
-import { FaLocationDot } from "react-icons/fa6";
-const Navbar = () => {
+// Define the User type
+interface User {
+  _id: string;
+  name: string;
+  email: string;
+  role: 'admin' | 'user';
+}
+
+const Navbar: React.FC = () => {
+  const token = useAppSelector(useCurrentToken);
+  const dispatch = useAppDispatch();
+  let user: User | undefined;
+
+  if (token) {
+    user = verifyToken(token) as User; // Ensure the token verification returns a User object
+  }
+
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [profileDropdown, setProfileDropdown] = useState(false);
-
 
   const toggleDropdown = (id: string | undefined) => {
     if (id) {
@@ -21,6 +39,12 @@ const Navbar = () => {
     setProfileDropdown(!profileDropdown);
   };
 
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate('/login');
+  };
+
   return (
     <nav className="shadow-md">
       {/* Top Section: Location, Contact Info, Icons */}
@@ -28,8 +52,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center py-3 max-w-7xl mx-auto p-4">
           <div className="flex space-x-6 text-slate-300 text-sm ">
             <p className="flex items-center gap-1">
-              <FaLocationDot className="text-white" /> 13th Parks Suite 559,
-              Denver
+              <FaLocationDot className="text-white" /> 13th Parks Suite 559, Denver
             </p>
             <p className="flex items-center gap-1">
               <IoCall className="text-white" /> +0 (555) 123 45 67
@@ -91,7 +114,7 @@ const Navbar = () => {
                     {/* Dropdown Menu */}
                     <div
                       className={`${
-                        activeDropdown === item.id ? "block" : "hidden"
+                        activeDropdown === item.id ? 'block' : 'hidden'
                       } absolute z-50 mt-2 w-44 bg-white shadow-lg p-2`}
                     >
                       <ul>
@@ -110,7 +133,7 @@ const Navbar = () => {
                   </>
                 ) : (
                   <Link
-                    to={item.path || "/"}
+                    to={item.path || '/'}
                     className="px-2 py-1 text-sm font-medium hover:text-[#0068d8] active:text-[#0068d8]"
                   >
                     {item.label}
@@ -179,29 +202,54 @@ const Navbar = () => {
             {profileDropdown && (
               <div className="absolute right-0 z-50 mt-2 w-48 bg-white shadow-lg p-2 rounded-lg">
                 <ul>
+                  {user?.role === 'admin' && (
+                    <>
+                      <li>
+                        <Link
+                          to="/dashboard/admin-dashboard"
+                          className="block px-4 py-2 text-sm text-neutral-700 hover:bg-gray-100"
+                        >
+                          Admin Dashboard
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          to="/settings"
+                          className="block px-4 py-2 text-sm text-neutral-700 hover:bg-gray-100"
+                        >
+                          Settings
+                        </Link>
+                      </li>
+                    </>
+                  )}
+
+                  {user?.role === 'user' && (
+                    <>
+                      <li>
+                        <Link
+                          to="/dashboard/user-dashboard"
+                          className="block px-4 py-2 text-sm text-neutral-700 hover:bg-gray-100"
+                        >
+                          User Dashboard
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          to="/profile"
+                          className="block px-4 py-2 text-sm text-neutral-700 hover:bg-gray-100"
+                        >
+                          Profile
+                        </Link>
+                      </li>
+                    </>
+                  )}
                   <li>
-                    <Link
-                      to="/dashboard"
-                      className="block px-4 py-2 text-sm text-neutral-700 hover:bg-gray-100"
-                    >
-                      Dashboard
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/settings"
-                      className="block px-4 py-2 text-sm text-neutral-700 hover:bg-gray-100"
-                    >
-                      Settings
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/logout"
-                      className="block px-4 py-2 text-sm text-neutral-700 hover:bg-gray-100"
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full text-left px-4 py-2 text-sm text-neutral-700 hover:bg-gray-100"
                     >
                       Logout
-                    </Link>
+                    </button>
                   </li>
                 </ul>
               </div>

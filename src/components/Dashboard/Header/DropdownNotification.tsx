@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import ClickOutside from '../Tables/ClickOutside';
+import ClickOutside from '../AdminDashboard/Tables/ClickOutside';
 
 
 const DropdownNotification = () => {

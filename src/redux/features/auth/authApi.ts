@@ -26,13 +26,8 @@ const authApi = baseApi.injectEndpoints({
       }),
       providesTags: ["Auth"],
     }),
-    validAuthUser:builder.query({
-      query:(token)=>({
-        url:`/user/validAuth/${token}`,
-        method:'GET',
-      })
-    })
+   
   }),
 });
 
-export const { useSignUpMutation, useLoginMutation, useGetUserByIdQuery,useValidAuthUserQuery } =authApi;
+export const { useSignUpMutation, useLoginMutation, useGetUserByIdQuery } =authApi;

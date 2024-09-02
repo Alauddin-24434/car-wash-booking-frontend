@@ -1,0 +1,129 @@
+import { useState } from "react";
+import AddServiceModal from "./AddServiceModal";
+import { useGetAllServicesQuery, useDeleteServiceByIdMutation } from "../../../../redux/features/service/serviceApi";
+
+// Service interface with an added image field
+interface Service {
+  _id: string;
+  name: string;
+  description: string;
+  duration: string;
+  price: string;
+  image: string;  // Added image field
+}
+
+const ServiceManagement = () => {
+  const { data: services, error, isLoading } = useGetAllServicesQuery(undefined);
+  const [isModelOpen, setIsModelOpen] = useState(false);
+  const [deleteService] = useDeleteServiceByIdMutation();  // Hook for deleting a service
+
+  const toggleModel = () => {
+    setIsModelOpen(!isModelOpen);
+  };
+
+  const handleDelete = (id: string) => {
+    if (confirm("Are you sure you want to delete this service?")) {
+      deleteService(id);
+    }
+  };
+
+  return (
+    <div className="p-6 bg-gray-50 min-h-screen">
+      {/* Top bar with Add Service button */}
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-semibold text-gray-800">Service Management</h2>
+        <button
+          onClick={toggleModel}
+          className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-5 py-2.5 rounded-lg shadow-lg hover:from-blue-600 hover:to-blue-700 transition"
+        >
+          Add Service
+        </button>
+      </div>
+
+      {/* Table with service data */}
+      <div className="overflow-x-auto bg-white shadow-md rounded-lg">
+        <table className="w-full min-w-max table-auto text-left">
+          {/* Table head */}
+          <thead className="bg-blue-100 text-blue-700">
+            <tr>
+              {['Image', 'Name', 'Description', 'Duration', 'Price', 'Actions'].map((heading) => (
+                <th key={heading} className="p-4 border-b border-blue-200">
+                  <p className="text-sm font-medium flex items-center justify-between gap-2">
+                    {heading}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="2"
+                      stroke="currentColor"
+                      aria-hidden="true"
+                      className="h-4 w-4"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9"></path>
+                    </svg>
+                  </p>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          {/* Table body */}
+          <tbody className="bg-white">
+            {services?.data?.map((service: Service, index: number) => (
+              <tr key={service._id} className={`border-b ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
+                <td className="p-4">
+                  <img src={service.image} alt={service.name} className="h-16 w-16 object-cover rounded-lg" />
+                </td>
+                <td className="p-4">
+                  <p className="text-sm text-gray-700">{service.name}</p>
+                </td>
+                <td className="p-4">
+                  <p className="text-sm text-gray-700">{service.description}</p>
+                </td>
+                <td className="p-4">
+                  <p className="text-sm text-gray-700">{service.duration}</p>
+                </td>
+                <td className="p-4">
+                  <p className="text-sm text-gray-700">{service.price}</p>
+                </td>
+                <td className="p-4">
+                  <div className="flex gap-2">
+                    <button className="bg-yellow-400 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-md hover:bg-yellow-500 transition">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="h-4 w-4">
+                        <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32L19.513 8.2z"></path>
+                      </svg>
+                    </button>
+                   
+                    <button
+                      onClick={() => handleDelete(service._id)}
+                      className="bg-red-400 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-md hover:bg-red-500 transition"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="h-4 w-4">
+                        <path fillRule="evenodd" d="M6.75 4.5a.75.75 0 000 1.5h10.5a.75.75 0 000-1.5H6.75zM5.25 7.5A.75.75 0 016 6.75h12a.75.75 0 01.75.75v11.25A2.25 2.25 0 0116.5 21H7.5a2.25 2.25 0 01-2.25-2.25V7.5z" clipRule="evenodd"></path>
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Footer */}
+      <footer className="relative pt-8 pb-6 mt-12">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-wrap items-center justify-center text-center">
+            <p className="text-sm text-gray-500">
+              Made with <a href="https://www.creative-tim.com/product/soft-ui-dashboard-tailwind" className="text-gray-900 hover:text-gray-800" target="_blank" rel="noopener noreferrer">Soft UI</a> by <a href="https://www.creative-tim.com" className="text-gray-900 hover:text-gray-800" target="_blank" rel="noopener noreferrer">Creative Tim</a>.
+            </p>
+          </div>
+        </div>
+      </footer>
+
+      {/* Add Service Modal */}
+      {isModelOpen && <AddServiceModal toggleModel={toggleModel} />}
+    </div>
+  );
+};
+
+export default ServiceManagement;

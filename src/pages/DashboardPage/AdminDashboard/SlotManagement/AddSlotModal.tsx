@@ -4,42 +4,29 @@ import { useState } from "react";
 import { useGetAllServicesQuery } from "../../../../redux/features/service/serviceApi";
 import CustomDropdown from "./CustomDropdown"; // Adjust the import path as needed
 
-interface Service {
-  _id: string;
-  name: string;
-  image: string; // Added image field
-}
-
 interface AddSlotModalProps {
   toggleModel: () => void;
 }
 
 const AddSlotModal: React.FC<AddSlotModalProps> = ({ toggleModel }) => {
-  const { data: servicesData, error: servicesError, isLoading: servicesLoading } = useGetAllServicesQuery(undefined);
-  const [createSlot, { data, error, isError, isLoading }] = useCreateSlotMutation();
+  const { data: servicesData } = useGetAllServicesQuery(undefined);
+  const [createSlot] = useCreateSlotMutation();
   const [service, setService] = useState<string>("");
   const [date, setDate] = useState<string>("");
-  const [startTime, setStartTime] = useState<string>("");
-  const [endTime, setEndTime] = useState<string>("");
-  const [isBooked, setIsBooked] = useState<"available" | "booked" | "canceled">("available");
-  const [isStartTimePickerOpen, setIsStartTimePickerOpen] = useState<boolean>(false);
-  const [isEndTimePickerOpen, setIsEndTimePickerOpen] = useState<boolean>(false);
-  const [serviceError, setServiceError] = useState(false); // State for service field error
+  const [startTime, setStartTime] = useState<string>("09:00");
+  const [endTime, setEndTime] = useState<string>("18:00");
+  const [serviceError, setServiceError] = useState(false);
+  const [showStartTimeOk, setShowStartTimeOk] = useState(false);
+  const [showEndTimeOk, setShowEndTimeOk] = useState(false);
+  const [loading, setLoading] = useState(false); // New loading state
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate all fields
-    setServiceError(!service); // Set error state based on service selection
+    setServiceError(!service);
 
     if (!service || !date || !startTime || !endTime) {
       toast.error("All fields are required");
-      return;
-    }
-
-    if (!service) {
-      toast.error("Please select a service");
       return;
     }
 
@@ -48,29 +35,21 @@ const AddSlotModal: React.FC<AddSlotModalProps> = ({ toggleModel }) => {
       date,
       startTime,
       endTime,
-      isBooked,
+      isBooked: "available",
     };
 
-    console.log("Submitting slot:", slot);
+    setLoading(true); // Set loading to true when submitting
 
     try {
-      const result = await createSlot(slot).unwrap();
-      console.log("Slot created successfully:", result);
-      toggleModel(); // Close modal on successful submission
+      await createSlot(slot).unwrap();
+      toast.success("Slot created successfully");
+      toggleModel(); // Close modal on success
     } catch (error) {
-      console.error("Failed to save slot:", error);
       toast.error("Failed to save slot");
+    } finally {
+      setLoading(false); // Set loading to false after the request is completed
     }
   };
-
-  // Log API response and errors for debugging
-  if (data) {
-    console.log("API Response Data:", data);
-  }
-
-  if (isError && error) {
-    console.error("API Error:", error);
-  }
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -109,7 +88,7 @@ const AddSlotModal: React.FC<AddSlotModalProps> = ({ toggleModel }) => {
             options={servicesData?.data || []}
             selectedValue={service}
             onSelect={(value) => setService(value)}
-            hasError={serviceError} // Pass error state to CustomDropdown
+            hasError={serviceError}
           />
 
           {/* Date Field */}
@@ -129,29 +108,28 @@ const AddSlotModal: React.FC<AddSlotModalProps> = ({ toggleModel }) => {
           <label className="mb-2 font-semibold text-gray-700" htmlFor="startTime">
             Start Time
           </label>
-          <div className="relative">
+          <div className="flex items-center mb-5">
             <input
               id="startTime"
-              type="text"
+              type="time"
               value={startTime}
-              onClick={() => setIsStartTimePickerOpen(true)}
-              readOnly
-              className="p-4 mb-5 bg-white border border-gray-200 rounded shadow-sm"
-              placeholder="Select start time"
+              onChange={(e) => {
+                setStartTime(e.target.value);
+                setShowStartTimeOk(true); // Show the OK button when time is changed
+              }}
+              className="p-4 bg-white border border-gray-200 rounded shadow-sm"
+              min="09:00"
+              max="18:00"
+              required
             />
-            {isStartTimePickerOpen && (
-              <div className="absolute z-10 bg-white border border-gray-300 shadow-lg">
-                {/* Time picker component goes here */}
-                <input
-                  type="time"
-                  value={startTime}
-                  onChange={(e) => {
-                    setStartTime(e.target.value);
-                    setIsStartTimePickerOpen(false);
-                  }}
-                  className="p-2 border rounded"
-                />
-              </div>
+            {showStartTimeOk && (
+              <button
+                type="button"
+                className="py-4 px-4 text-black border rounded-tr bg-[#fff] text-md transition"
+                onClick={() => setShowStartTimeOk(false)} // Hide button when clicked
+              >
+                OK
+              </button>
             )}
           </div>
 
@@ -159,46 +137,30 @@ const AddSlotModal: React.FC<AddSlotModalProps> = ({ toggleModel }) => {
           <label className="mb-2 font-semibold text-gray-700" htmlFor="endTime">
             End Time
           </label>
-          <div className="relative">
+          <div className="flex items-center mb-5">
             <input
               id="endTime"
-              type="text"
+              type="time"
               value={endTime}
-              onClick={() => setIsEndTimePickerOpen(true)}
-              readOnly
-              className="p-4 mb-5 bg-white border border-gray-200 rounded shadow-sm"
-              placeholder="Select end time"
+              onChange={(e) => {
+                setEndTime(e.target.value);
+                setShowEndTimeOk(true); // Show the OK button when time is changed
+              }}
+              className="p-4 bg-white border border-gray-200 rounded shadow-sm"
+              min="09:00"
+              max="18:00"
+              required
             />
-            {isEndTimePickerOpen && (
-              <div className="absolute z-10 bg-white border border-gray-300 shadow-lg">
-                {/* Time picker component goes here */}
-                <input
-                  type="time"
-                  value={endTime}
-                  onChange={(e) => {
-                    setEndTime(e.target.value);
-                    setIsEndTimePickerOpen(false);
-                  }}
-                  className="p-2 border rounded"
-                />
-              </div>
+            {showEndTimeOk && (
+              <button
+                type="button"
+                className="py-4 px-4 text-black border rounded-tr bg-[#fff] text-md transition"
+                onClick={() => setShowEndTimeOk(false)} // Hide button when clicked
+              >
+                OK
+              </button>
             )}
           </div>
-
-          {/* Status Field */}
-          <label className="mb-2 font-semibold text-gray-700" htmlFor="isBooked">
-            Status
-          </label>
-          <select
-            id="isBooked"
-            value={isBooked}
-            onChange={(e) => setIsBooked(e.target.value as "available" | "booked" | "canceled")}
-            className="p-4 mb-5 bg-white border border-gray-200 rounded shadow-sm"
-          >
-            <option value="available">Available</option>
-            <option value="booked">Booked</option>
-            <option value="canceled">Canceled</option>
-          </select>
 
           <hr />
           <div className="flex justify-between mt-4">
@@ -206,22 +168,19 @@ const AddSlotModal: React.FC<AddSlotModalProps> = ({ toggleModel }) => {
               type="button"
               onClick={toggleModel}
               className="text-gray-600 font-semibold"
+              disabled={loading} // Disable cancel button when loading
             >
               Cancel
             </button>
             <button
               type="submit"
               className="px-4 py-2 text-white font-semibold bg-blue-500 rounded hover:bg-blue-600 transition"
+              disabled={loading} // Disable submit button during loading
             >
-              Save
+              {loading ? "Submitting..." : "Submit"} {/* Show loading text */}
             </button>
           </div>
         </form>
-
-        {/* Footer */}
-        <div className="flex justify-between items-center p-5 bg-white border-t border-gray-200 rounded-bl-lg rounded-br-lg">
-          {/* Footer content here if needed */}
-        </div>
       </div>
     </div>
   );

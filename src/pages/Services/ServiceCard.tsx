@@ -11,8 +11,8 @@ const navigate=useNavigate()
 navigate(`/serviceDetails/${service._id}`)
   }
   return (
-    <article className="rounded-xl bg-white p-3 shadow-lg hover:shadow-xl hover:transform hover:scale-105 duration-300">
-      <div onClick={handleNavigate} className="relative flex items-end overflow-hidden rounded-xl">
+    <article onClick={handleNavigate}  className="rounded-xl hover:cursor-pointer bg-white p-3 shadow-md hover:shadow-xl hover:transform hover:scale-105 duration-300">
+      <div  className="relative flex items-end overflow-hidden rounded-xl">
         <img src={service?.image} alt={service?.name} className="w-full h-48 object-cover"/>
        
       </div>

@@ -15,7 +15,7 @@ const useCurrentUser = () => {
   );
 
   return {
- 
+    userId: user?.userId,
     userData: userData?.data, // Corrected here to return userData.data directly
     userIsLoading,
   };

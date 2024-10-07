@@ -2,6 +2,7 @@ import React from "react";
 import ServiceCard from "../../pages/Services/ServiceCard";
 import Container from "../Shared/Container/Container";
 import { useGetAllServicesQuery } from "../../redux/features/service/serviceApi";
+import Loader from "../Shared/Loader/Loader";
 
 // Define the type for the service data
 interface Service {
@@ -22,9 +23,7 @@ const WhatWeAreOffering: React.FC = () => {
       <div className="bg-[#F0F3FF] border py-12">
         <Container>
           <div className="flex justify-center items-center h-64">
-            <p className="text-[#0068d8] font-bold text-xl">
-              Loading services...
-            </p>
+           <Loader/>
           </div>
         </Container>
       </div>
@@ -47,7 +46,7 @@ const WhatWeAreOffering: React.FC = () => {
   }
 
   // Limit to six services
-  const servicesToShow = data?.data.slice(0, 6) || [];
+  const servicesToShow = data?.data.slice(0, 8) || [];
 
   return (
     <div className="bg-[#F0F3FF] border py-12">
@@ -63,9 +62,9 @@ const WhatWeAreOffering: React.FC = () => {
 
           </div>
       
-        <section className="p-4">
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
-            {servicesToShow.map((service: Service) => (
+          <section className="p-3">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {servicesToShow?.map((service:Service) => (
               <ServiceCard key={service._id} service={service} />
             ))}
           </div>

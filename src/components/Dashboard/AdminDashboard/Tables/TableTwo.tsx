@@ -1,8 +1,8 @@
 
-import ProductOne from '../../../images/product/product-01.png';
-import ProductTwo from '../../../mages/product/product-02.png';
-import ProductThree from '../../../images/product/product-03.png';
-import ProductFour from '../../../images/product/product-04.png';
+import ProductOne from '../../../../images/product/product-01.png';
+import ProductTwo from '../../../../images/product/product-02.png';
+import ProductThree from '../../../../images/product/product-03.png';
+import ProductFour from '../../../../images/product/product-04.png';
 export type Product = {
     image: string;
     name: string;

@@ -1,3 +1,53 @@
+
+/* Signup.css */
+
+.relative {
+    position: relative;
+  }
+  
+  .absolute {
+    position: absolute;
+  }
+  
+  .bg-gray-900 {
+    background-color: rgba(0, 0, 0, 0.9);
+  }
+  
+  .bg-opacity-50 {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  .z-10 {
+    z-index: 10;
+  }
+  
+  /* Loader specific styles if needed */
+  
+
+
+  /* General form container styling */
+
+  
+  .rounded-lg {
+    border-radius: 0.5rem;
+  }
+  
+  /* Input field styling */
+  input {
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  
+
+  
+  /* Button styling */
+  button {
+    transition: background-color 0.3s, box-shadow 0.3s;
+  }
+  
+
+
+
+  
 .circles{
     position: absolute;
     top: 0;

@@ -3,13 +3,15 @@ import DashboardLayout from "../layout/DashboardLayout";
 import ServiceManagement from "../pages/DashboardPage/AdminDashboard/ServiceManagement/ServiceManagement";
 
 import ProtectedRoute from "../layout/ProtectedRoute";
-import UserManagement from "../pages/UserManagement/UserManagement";
+import UserManagement from "../pages/DashboardPage/AdminDashboard/UserManagement/UserManagement";
 import SlotManagement from "../pages/DashboardPage/AdminDashboard/SlotManagement/SlotManagement";
 import AdminDashboard from "../pages/DashboardPage/AdminDashboard/AdminDashboard";
+import ErrorPage from "../pages/ErrorPage/ErrorPage";
 
 export const adminRoutes = [
   {
     path: '/dashboard',
+    errorElement: <ErrorPage />,
     element: <DashboardLayout />,
     children: [
       {

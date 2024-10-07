@@ -9,10 +9,11 @@ const Footer = () => {
 
         <div className="container flex flex-col flex-wrap px-5 py-16 mx-auto md:items-center lg:items-start md:flex-row md:flex-no-wrap">
           <div className="flex-shrink-0 w-64 mx-auto text-center md:mx-0 md:text-left">
-            <a className="flex items-center justify-center font-medium text-gray-900 title-font md:justify-start">
-              ICT
+            <a className="flex items-center justify-center  text-[#0068d8] font-extrabold  title-font md:justify-start">
+              CAR WASH
             </a>
-            <p className="mt-2 text-sm text-gray-500">Government of the People's Republic of Bangladesh</p>
+            <p className="mt-2 text-sm text-gray-500">We offer top-notch car washing and detailing
+            services that will make your car shine</p>
             <div className="mt-4">
               <span className="inline-flex justify-center mt-2 sm:ml-auto sm:mt-0 sm:justify-start">
                 <a className="text-gray-500 cursor-pointer hover:text-gray-700">
@@ -173,10 +174,10 @@ const Footer = () => {
         </div>
         
       </Container>
-      <div className="bg-[#6265da] shadow-dark-mild">
+      <div className="bg-[#0E111B]">
           <div className="container px-5 py-4 mx-auto">
-            <p className="text-sm text-[#fff] capitalize xl:text-center">
-              © 2020 All rights reserved{" "}
+            <p className="text-sm text-[#fff] capitalize text-center">
+              © 2024 All rights reserved{" "}
             </p>
           </div>
         </div>

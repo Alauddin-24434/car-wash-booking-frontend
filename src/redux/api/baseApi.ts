@@ -17,7 +17,7 @@ import { toast } from "sonner";
  * - `prepareHeaders`: A function to set the authorization header if a token exists.
  */
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:5000/api/", // Base API URL
+  baseUrl: "https://car-wash-booking-system-liard.vercel.app/api", // Base API URL
   credentials: "include", // Include cookies in requests
   prepareHeaders: (headers, { getState }) => {
     // Retrieve the token from the Redux state
@@ -39,40 +39,57 @@ const baseQueryWithRefreshToken: BaseQueryFn<
 > = async (args, api, extraOptions): Promise<any> => {
   let result = await baseQuery(args, api, extraOptions);
 
-  if (result?.error?.status === 404) {
-    toast.error(result.error.data.message);
-  }
-  if (result?.error?.status === 403) {
-    toast.error(result.error.data.message);
-  }
-  if (result?.error?.status === 401) {
- 
+  if (result?.error) {
+    // Handle 404 error
+    if (result.error.status === 404) {
+      const errorMessage = (result.error as any)?.data?.message;
+      if (errorMessage) {
+        toast.error(errorMessage);
+      } else {
+        toast.error('Resource not found');
+      }
+    }
 
-    const res = await fetch("http://localhost:5000/api/auth/refresh-token", {
-      method: "POST",
-      credentials: "include",
-    });
+    // Handle 403 error
+    if (result.error.status === 403) {
+      const errorMessage = (result.error as any)?.data?.message;
+      if (errorMessage) {
+        toast.error(errorMessage);
+      } else {
+        toast.error('Access denied');
+      }
+    }
 
-    const data = await res.json();
+    // Handle 401 error
+    if (result.error.status === 401) {
+      const res = await fetch("https://car-wash-booking-system-liard.vercel.app/api/auth/refresh-token", {
+        method: "POST",
+        credentials: "include",
+      });
 
-    if (data?.data?.accessToken) {
-      const user = (api.getState() as RootState).auth.user;
+      const data = await res.json();
 
-      api.dispatch(
-        setUser({
-          user,
-          token: data.data.accessToken,
-        })
-      );
+      if (data?.data?.accessToken) {
+        const user = (api.getState() as RootState).auth.user;
 
-      result = await baseQuery(args, api, extraOptions);
-    } else {
-      api.dispatch(logout());
+        api.dispatch(
+          setUser({
+            user,
+            token: data.data.accessToken,
+          })
+        );
+
+        // Retry the original request with the new token
+        result = await baseQuery(args, api, extraOptions);
+      } else {
+        api.dispatch(logout());
+      }
     }
   }
 
   return result;
 };
+
 
 /**
  * Create the base API slice using Redux Toolkit Query.
@@ -84,6 +101,6 @@ const baseQueryWithRefreshToken: BaseQueryFn<
 export const baseApi = createApi({
   reducerPath: "baseApi", // Unique key for the API slice
   baseQuery: baseQueryWithRefreshToken, // Use the custom base query
-  tagTypes: ["Auth", "Service", "Slot"], // Define tag types for caching
+  tagTypes: ["Auth", "Service", "Slot","Booking","Payment","Review"], // Define tag types for caching
   endpoints: () => ({}), // No endpoints defined here; extend this in other files
 });

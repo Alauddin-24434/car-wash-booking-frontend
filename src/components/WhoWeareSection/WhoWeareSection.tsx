@@ -17,7 +17,7 @@ const WhoWeareSection = () => {
           <img
             src="https://lirp.cdn-website.com/f8cd5085/dms3rep/multi/opt/2024-Hyundai-Palisade-Black-PPF-Ceramic-Coating-Photos-5-scaled-bbd40c29-1920w.jpg"
             alt="Car Detailing"
-            className="w-5/6 h-[300px] md:h-[510px] object-cover"
+            className="w-full md:w-5/6 h-[300px] md:h-[510px] object-cover"
           />
 
           <div className="absolute border bg-white w-[100px] h-[80px] md:w-[140px] md:h-[125px] top-2 left-2 md:top-4 md:left-4">
@@ -40,9 +40,9 @@ const WhoWeareSection = () => {
           </div>
         </div>
 
-        <div className="w-full md:w-[60%]  p-4">
-          <div className="flex flex-col">
-            <h2 className="text-sm md:text-base text-[#0068d8] font-bold leading-[1.1em] tracking-[-0.2px]">
+        <div className="w-full md:w-[60%]  p-4 ">
+          <div className="flex flex-col ">
+            <h2 className="text-sm  md:text-base text-[#0068d8] font-bold leading-[1.1em] tracking-[-0.2px]">
               Who we are?
             </h2>
             <h2 className="text-2xl md:text-[52px] text-[#0e111b] font-bold leading-[1.1em] tracking-[-0.2px] mt-2">

@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import Container from "../../components/Shared/Container/Container";
-
-import { useGetAllServicesQuery } from '../../redux/features/service/serviceApi';
-import ServiceCard from './ServiceCard';
+import { useGetAllServicesQuery } from "../../redux/features/service/serviceApi";
+import ServiceCard from "./ServiceCard";
+import Loader from "../../components/Shared/Loader/Loader";
 
 interface Service {
   _id: string;
@@ -14,115 +14,155 @@ interface Service {
 }
 
 const Services: React.FC = () => {
-  // Fetch real data
-  const { data, error, isLoading } = useGetAllServicesQuery(undefined);
+  const { data,isError, isLoading } = useGetAllServicesQuery(undefined);
 
-  const [searchTerm, setSearchTerm] = useState<string>('');
-  const [filterBy, setFilterBy] = useState<string>('');
-  const [sortBy, setSortBy] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [filterBy, setFilterBy] = useState<string>("");
+  const [activeButton, setActiveButton] = useState<string>(""); // State to track active button
   const [filteredServices, setFilteredServices] = useState<Service[]>([]);
 
   useEffect(() => {
-    if (!data) return; // No data yet, return early
+    if (!data) return;
 
     let updatedServices = data.data as Service[];
 
     if (searchTerm) {
-      updatedServices = updatedServices.filter(service =>
-        service.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        service.description.toLowerCase().includes(searchTerm.toLowerCase())
+      updatedServices = updatedServices.filter(
+        (service) =>
+          service.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          service.description.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
     if (filterBy) {
-      updatedServices = updatedServices.filter(service => {
-        if (filterBy === 'low-price') return service.price <= 100;
-        if (filterBy === 'high-price') return service.price > 100;
-        if (filterBy === 'short-duration') return service.duration <= 60;
-        if (filterBy === 'long-duration') return service.duration > 60;
+      updatedServices = updatedServices.filter((service) => {
+        if (filterBy === "low-price") return service.price <= 100;
+        if (filterBy === "high-price") return service.price > 100;
+        if (filterBy === "short-duration") return service.duration <= 60;
+        if (filterBy === "long-duration") return service.duration > 60;
         return true;
       });
     }
 
-    if (sortBy === 'price-asc') {
-      updatedServices = updatedServices.sort((a, b) => a.price - b.price);
-    } else if (sortBy === 'price-desc') {
-      updatedServices = updatedServices.sort((a, b) => b.price - a.price);
-    } else if (sortBy === 'duration-asc') {
-      updatedServices = updatedServices.sort((a, b) => a.duration - b.duration);
-    } else if (sortBy === 'duration-desc') {
-      updatedServices = updatedServices.sort((a, b) => b.duration - a.duration);
-    }
-
     setFilteredServices(updatedServices);
-  }, [data, searchTerm, filterBy, sortBy]);
+  }, [data, searchTerm, filterBy]);
 
   const handleCancel = () => {
-    setSearchTerm('');
-    setFilterBy('');
-    setSortBy('');
+    setSearchTerm("");
+    setFilterBy("");
+    setActiveButton(""); // Reset active button
     if (data) {
       setFilteredServices(data.data as Service[]);
     }
   };
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error loading services</p>;
+  const handleFilterClick = (filter: string) => {
+    setFilterBy(filter);
+    setActiveButton(filter); // Set the clicked button as active
+  };
 
-  return (
-    <section className="relative bg-[#F0F3FF]">
+  const buttonClass = (filter: string) =>
+    activeButton === filter ? "bg-black text-white" : "bg-white text-gray-400";
+
+  if (isLoading) {
+    return (
       <Container>
-        <div className='p-4 py-12'>
-          <h2 className="text-sm md:text-base text-[#0068d8] font-bold leading-[1.1em] tracking-[-0.2px]">
-            Our Services
-          </h2>
-          <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-[#0e111b] font-bold leading-[1.1em] tracking-[-0.2px] mt-2">
-            We are dedicated to providing <br className="hidden md:block" /> our best service to you
-          </h2>
-          <span className="flex flex-col gap-2 pt-4 md:flex-row md:justify-between ">
-            <p className="text-xs md:text-xs lg:text-sm mt-4 text-[#424649]">
-              At our company, we provide a range of high-quality services designed to meet <br className="hidden md:block" /> your needs and exceed your expectations.
-            </p>
-            <div className="flex flex-col md:flex-row gap-2 justify-end items-center space-y-4 md:space-y-0">
-              <input
-                type="text"
-                placeholder="Search services..."
-                className="p-2 border border-gray-300 rounded w-full md:w-auto"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <select
-                className="p-2 border border-gray-300 rounded w-full md:w-auto"
-                value={filterBy}
-                onChange={(e) => setFilterBy(e.target.value)}
-              >
-                <option value="">Filter by</option>
-                <option value="low-price">Low Price</option>
-                <option value="high-price">High Price</option>
-                <option value="short-duration">Short Duration</option>
-                <option value="long-duration">Long Duration</option>
-              </select>
-              <select
-                className="p-2 border border-gray-300 rounded w-full md:w-auto"
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-              >
-                <option value="">Sort by</option>
-                <option value="price-asc">Price: Low to High</option>
-                <option value="price-desc">Price: High to Low</option>
-                <option value="duration-asc">Duration: Short to Long</option>
-                <option value="duration-desc">Duration: Long to Short</option>
-              </select>
-              <button 
-                className="p-2 border border-gray-300 rounded bg-red-500 text-white w-full md:w-auto" 
+        <div className="p-4 flex flex-col items-center justify-center h-screen ">
+          <Loader />
+        </div>
+      </Container>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Container>
+        <div className="p-4 py-12">
+          <p className="text-center text-red-500">
+            An error occurred while fetching service details.
+          </p>
+        </div>
+      </Container>
+    );
+  }
+  return (
+    <section className="relative bg-gray-100">
+      <Container>
+        <div className="p-4 py-12 ">
+          <div className="flex flex-col md:flex-row gap-2 justify-between items-center ">
+            {/*filter button  */}
+
+            <div className="flex flex-col md:flex-row gap-2 items-center space-y-4 md:space-y-0">
+              <button
+                className={`py-1.5 px-10 shadow-md rounded-2xl w-full md:w-auto ${buttonClass(
+                  ""
+                )}`}
                 onClick={handleCancel}
               >
-                Cancel
+                All
+              </button>
+              <button
+                className={`py-1.5 px-6 shadow-md rounded-2xl w-full md:w-auto ${buttonClass(
+                  "low-price"
+                )}`}
+                onClick={() => handleFilterClick("low-price")}
+              >
+                Low Price
+              </button>
+              <button
+                className={`py-1.5 px-6 shadow-md rounded-2xl w-full md:w-auto ${buttonClass(
+                  "high-price"
+                )}`}
+                onClick={() => handleFilterClick("high-price")}
+              >
+                High Price
+              </button>
+              <button
+                className={`py-1.5 px-6 shadow-md rounded-2xl w-full md:w-auto ${buttonClass(
+                  "short-duration"
+                )}`}
+                onClick={() => handleFilterClick("short-duration")}
+              >
+                Short Duration
+              </button>
+              <button
+                className={`py-1.5 px-10 shadow-md rounded-2xl w-full md:w-auto ${buttonClass(
+                  "long-duration"
+                )}`}
+                onClick={() => handleFilterClick("long-duration")}
+              >
+                Long Duration
               </button>
             </div>
-          </span>
+            {/* search */}
+            <div className="flex flex-row justify-end rounded-2xl bg-white shadow-md overflow-hidden max-w-md  font-[sans-serif]">
+              <input
+                type="email"
+                placeholder="Search Something..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full outline-none bg-white text-sm px-5 py-2"
+              />
+              <button
+                type="button"
+                className="flex items-center justify-center px-6"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 192.904 192.904"
+                  width="18px"
+                >
+                  <path
+                    d="m190.707 180.101-47.078-47.077c11.702-14.072 18.752-32.142 18.752-51.831C162.381 36.423 125.959 0 81.191 0 36.422 0 0 36.423 0 81.193c0 44.767 36.422 81.187 81.191 81.187 19.688 0 37.759-7.049 51.831-18.751l47.079 47.078a7.474 7.474 0 0 0 5.303 2.197 7.498 7.498 0 0 0 5.303-12.803zM15 81.193C15 44.694 44.693 15 81.191 15c36.497 0 66.189 29.694 66.189 66.193 0 36.496-29.692 66.187-66.189 66.187C44.693 147.38 15 117.689 15 81.193z"
+                    fill="#808080"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+          </div>
         </div>
-        <section className="p-4">
+
+        <section className="p-3">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {filteredServices.map((service) => (
               <ServiceCard key={service._id} service={service} />

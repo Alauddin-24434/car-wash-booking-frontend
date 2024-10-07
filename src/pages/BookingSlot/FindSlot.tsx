@@ -3,9 +3,14 @@ import { useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import { useGetAvailableSlotsQuery } from "../../redux/features/slot/slotApi";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import {  SelectedSlot, selectSelectedSlots, toggleSlot } from "../../redux/features/booking/bookingSlice";
+import {
+  SelectedSlot,
+  selectSelectedSlots,
+  toggleSlot,
+} from "../../redux/features/booking/bookingSlice";
 import { useNavigate } from "react-router-dom";
-import './FindSlot.css'
+import "./FindSlot.css";
+
 
 interface Slot {
   _id: string;
@@ -24,12 +29,20 @@ interface ApiError {
 type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
 
-export const FindSlot: React.FC<{ serviceId: string, serviceName: string }> = ({ serviceId, serviceName }) => {
+export const FindSlot: React.FC<{
+  userId:string;
+  serviceId: string;
+  serviceName: string;
+  duration: number;
+  image: string;
+  price: number;
+}> = ({ userId, serviceId, serviceName, duration, image, price }) => {
   const [value, onChange] = useState<Value>(new Date());
   const [availableSlots, setAvailableSlots] = useState<Slot[]>([]);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const selectedSlots = useAppSelector(selectSelectedSlots);
+  const selectedSlots = useAppSelector(selectSelectedSlots ).filter((fil)=>fil?.userId === userId);
+
 
   const formatDate = (date: Date) => {
     const year = date.getFullYear();
@@ -44,7 +57,11 @@ export const FindSlot: React.FC<{ serviceId: string, serviceName: string }> = ({
 
   const date = formattedDate?.toString();
 
-  const { data: slots, error, isLoading } = useGetAvailableSlotsQuery({
+  const {
+    data: slots,
+    error,
+    isLoading,
+  } = useGetAvailableSlotsQuery({
     serviceId,
     date,
   });
@@ -63,6 +80,7 @@ export const FindSlot: React.FC<{ serviceId: string, serviceName: string }> = ({
   ) => {
     if (isBooked === "available") {
       const slot: SelectedSlot = {
+        userId,
         serviceId,
         slotId,
         serviceName,
@@ -70,6 +88,9 @@ export const FindSlot: React.FC<{ serviceId: string, serviceName: string }> = ({
         endTime,
         date: formattedDate || "",
         status: "upcoming",
+        image,
+        duration,
+        price,
       };
 
       // Dispatch action to toggle slot
@@ -78,7 +99,7 @@ export const FindSlot: React.FC<{ serviceId: string, serviceName: string }> = ({
   };
 
   const handleNavigate = () => {
-    navigate('/booking');
+    navigate("/booking-page");
   };
   // const handleClearSlots = () => {
   //   dispatch(clearSelectedSlots());
@@ -104,7 +125,7 @@ export const FindSlot: React.FC<{ serviceId: string, serviceName: string }> = ({
           </p>
         )}
         {!error && availableSlots.length > 0 && (
-          <table className="w-full border-collapse bg-white border border-gray-300">
+          <table className="w-full border-collapse bg-gray-100 border border-gray-300">
             <thead>
               <tr className="bg-gray-200 text-gray-600 border-b border-gray-300">
                 <th className="p-3 font-bold uppercase">Time Slot</th>
@@ -145,9 +166,16 @@ export const FindSlot: React.FC<{ serviceId: string, serviceName: string }> = ({
                   <td className="p-3 border-b border-gray-300 text-center">
                     <input
                       type="checkbox"
-                      checked={selectedSlots.some((selected) => selected.slotId === slot._id)}
+                      checked={selectedSlots.some(
+                        (selected) => selected.slotId === slot._id
+                      )}
                       onChange={() =>
-                        handleCheckboxChange(slot._id, slot.isBooked, slot.startTime, slot.endTime)
+                        handleCheckboxChange(
+                          slot._id,
+                          slot.isBooked,
+                          slot.startTime,
+                          slot.endTime
+                        )
                       }
                       disabled={slot.isBooked === "booked"}
                     />
@@ -176,8 +204,7 @@ export const FindSlot: React.FC<{ serviceId: string, serviceName: string }> = ({
             Clear Selected Slots
           </button> */}
         </div>
-        </div>
-    
+      </div>
     </div>
   );
 };

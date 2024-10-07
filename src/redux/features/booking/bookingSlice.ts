@@ -4,13 +4,17 @@ import { RootState } from "../../store";
 
 // Define the interface for a selected slot
 export interface SelectedSlot {
+  userId: string;
   serviceId: string;
   slotId: string;
+  price: number;
   serviceName: string;
   startTime: string;
   endTime: string;
   date: string;
   status: "upcoming" | "past";
+  duration: number;
+  image: string;
 }
 
 // Define the initial state for the booking slice
@@ -43,7 +47,10 @@ const bookingSlice = createSlice({
       }
     },
     // Remove a specific slot
-    removeSlot: (state, action: PayloadAction<{ slotId: string; serviceId: string }>) => {
+    removeSlot: (
+      state,
+      action: PayloadAction<{ slotId: string; serviceId: string }>
+    ) => {
       const { slotId, serviceId } = action.payload;
       state.selectedSlots = state.selectedSlots.filter(
         (s) => !(s.slotId === slotId && s.serviceId === serviceId)
@@ -57,10 +64,12 @@ const bookingSlice = createSlice({
 });
 
 // Export the actions
-export const { clearSelectedSlots, toggleSlot, removeSlot } = bookingSlice.actions;
+export const { clearSelectedSlots, toggleSlot, removeSlot } =
+  bookingSlice.actions;
 
 // Selector to get the selected slots
-export const selectSelectedSlots = (state: RootState) => state.booking.selectedSlots;
+export const selectSelectedSlots = (state: RootState) =>
+  state.booking.selectedSlots;
 
 // Export the reducer
 export default bookingSlice.reducer;

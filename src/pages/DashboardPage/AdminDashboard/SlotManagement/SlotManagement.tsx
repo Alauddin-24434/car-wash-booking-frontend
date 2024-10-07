@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import AddSlotModal from "./AddSlotModal";
 import { useGetAllSlotsQuery, useToggleSlotStatusMutation } from "../../../../redux/features/slot/slotApi";
+import Container from "../../../../components/Shared/Container/Container";
+import Loader from "../../../../components/Shared/Loader/Loader";
 
 interface Service{
     name:string
@@ -68,19 +70,38 @@ const SlotManagement: React.FC = () => {
       }
     };
   
-    if (isLoading) return <p>Loading...</p>;
-    if (error) return <p>Error loading slots...</p>;
+    if (isLoading) {
+      return (
+        <Container>
+          <div className="p-4 flex flex-col items-center justify-center h-screen ">
+            <Loader />
+          </div>
+        </Container>
+      );
+    }
+  
+    if (error) {
+      return (
+        <Container>
+          <div className="p-4 py-12">
+            <p className="text-center text-red-500">
+              An error occurred while fetching service details.
+            </p>
+          </div>
+        </Container>
+      );
+    }
   
     return (
-      <div className="p-6 bg-gray-50 min-h-screen">
+      <div className=" bg-gray-50 min-h-screen">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-semibold text-gray-800">Slot Management</h2>
-          <button
-            onClick={toggleModel}
-            className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-5 py-2.5 rounded-lg shadow-lg hover:from-blue-600 hover:to-blue-700 transition"
-          >
-            Add Slot
-          </button>
+        <h2 className="text-md md:text-2xl font-semibold text-gray-800">Slot Management</h2>
+        <button
+          onClick={toggleModel}
+          className="bg-gradient-to-r from-blue-500 to-blue-600 text-white text-xs px-2 md:px-5 lg:px-5 py-2.5 rounded-lg shadow-lg hover:from-blue-600 hover:to-blue-700 transition"
+        >
+          Add Slot
+        </button>
         </div>
   
         <div className="overflow-x-auto bg-white shadow-md rounded-lg">
@@ -111,17 +132,17 @@ const SlotManagement: React.FC = () => {
               {slots.map((slot, index) => (
                 <tr key={slot._id} className={`border-b ${index % 2 === 0 ? "bg-gray-50" : "bg-white"}`}>
                   <td className="p-4">
-                    <p className="text-sm text-gray-700">{slot.service.name}</p>
+                    <p className="text-sm text-gray-700">{slot?.service?.name}</p>
                   </td>
                   <td className="p-4">
-                    <p className="text-sm text-gray-700">{slot.date}</p>
+                    <p className="text-sm text-gray-700">{slot?.date}</p>
                   </td>
                   <td className="p-4">
-                    <p className="text-sm text-gray-700">{slot.startTime}</p>
+                    <p className="text-sm text-gray-700">{slot?.startTime}</p>
                     
                   </td>
                   <td className="p-4">
-                    <p className="text-sm text-gray-700">{slot.endTime}</p>
+                    <p className="text-sm text-gray-700">{slot?.endTime}</p>
                   </td>
                   <td className="p-4">
                     <div
@@ -137,13 +158,13 @@ const SlotManagement: React.FC = () => {
                     </div>
                   </td>
                   <td className="p-4">
-                    <label className="relative inline-flex items-center cursor-pointer">
+                    <label className="relative inline-flex items-center cursor-pointer ">
                       <input
                         type="checkbox"
                         checked={slot.isBooked === "available"}
                         onChange={() => handleStatusToggle(slot._id, slot.isBooked)}
-                        className="sr-only"
-                        aria-label="Toggle slot status"
+                        className="sr-only "
+                        aria-label="Toggle slot status "
                       />
                       <div className="w-10 h-5 bg-gray-200 rounded-full shadow-inner"></div>
                       <div
@@ -159,15 +180,7 @@ const SlotManagement: React.FC = () => {
           </table>
         </div>
   
-        <footer className="relative pt-8 pb-6 mt-12">
-          <div className="container mx-auto px-4">
-            <div className="flex flex-wrap items-center justify-center text-center">
-              <p className="text-sm text-gray-500">
-                Made with <a href="https://www.creative-tim.com/product/soft-ui-dashboard-tailwind" className="text-gray-900 hover:text-gray-800" target="_blank" rel="noopener noreferrer">Soft UI</a> by <a href="https://www.creative-tim.com" className="text-gray-900 hover:text-gray-800" target="_blank" rel="noopener noreferrer">Creative Tim</a>.
-              </p>
-            </div>
-          </div>
-        </footer>
+       
   
         {isModelOpen && <AddSlotModal toggleModel={toggleModel} />}
       </div>

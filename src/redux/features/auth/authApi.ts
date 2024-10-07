@@ -8,7 +8,7 @@ const authApi = baseApi.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["Auth"], // Invalidate 'Auth' data after signing up
+      invalidatesTags: ["Auth"],
     }),
     login: builder.mutation({
       query: (body) => ({
@@ -16,9 +16,8 @@ const authApi = baseApi.injectEndpoints({
         method: "POST",
         body: body,
       }),
-      invalidatesTags: ["Auth"], // Invalidate 'Auth' data after signing in
+      invalidatesTags: ["Auth"],
     }),
-    // Other auth-related endpoints can be defined similarly
     getUserById: builder.query({
       query: (id) => ({
         url: `/user/${id}`,
@@ -26,8 +25,38 @@ const authApi = baseApi.injectEndpoints({
       }),
       providesTags: ["Auth"],
     }),
-   
+    getAllUsers: builder.query({
+      query: () => ({
+        url: `/users`,
+        method: "GET",
+      }),
+      providesTags: ["Auth"],
+    }),
+    // Mutation to update user role
+    updateUserRole: builder.mutation({
+      query: ({ userId, newRole }) => ({
+        url: `/users/${userId}`,
+        method: "PUT",
+        body: { role: newRole }, // Send the new role in the body
+      }),
+      invalidatesTags: ["Auth"], // Invalidate 'Auth' data to trigger re-fetch
+    }),
+    updateUserThroughUser: builder.mutation({
+      query: ({ userId, data }) => ({
+        url: `/users/throughUser/${userId}`,
+        method: "PUT",
+        body: data, // Send the new role in the body
+      }),
+      invalidatesTags: ["Auth"], // Invalidate 'Auth' data to trigger re-fetch
+    }),
   }),
 });
 
-export const { useSignUpMutation, useLoginMutation, useGetUserByIdQuery } =authApi;
+export const {
+  useSignUpMutation,
+  useLoginMutation,
+  useGetUserByIdQuery,
+  useGetAllUsersQuery,
+  useUpdateUserThroughUserMutation,
+  useUpdateUserRoleMutation, // Export the new hook for updating user role
+} = authApi;

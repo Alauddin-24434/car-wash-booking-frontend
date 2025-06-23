@@ -25,7 +25,7 @@ import Link from "next/link"
 const heroSlides = [
   {
     id: 1,
-    image: "/images/hero-1.jpg",
+    image: "/hero3.png",
     title: "Premium Car Wash & Detailing",
     subtitle: "Experience the ultimate car care with our professional services",
     cta: "Book Now",
@@ -33,7 +33,7 @@ const heroSlides = [
   },
   {
     id: 2,
-    image: "/images/hero-2.jpg",
+    image: "/hero2.jpg",
     title: "Shine Like Never Before",
     subtitle: "Professional detailing that makes your car look brand new",
     cta: "Get Started",
@@ -41,7 +41,7 @@ const heroSlides = [
   },
   {
     id: 3,
-    image: "/images/hero-3.jpg",
+    image: "/hero1.png",
     title: "Your Car Deserves the Best",
     subtitle: "Premium care with eco-friendly products and expert service",
     cta: "Book Service",

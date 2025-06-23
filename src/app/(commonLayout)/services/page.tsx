@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Clock, Star, Search, Car, Droplets, Sparkles, Shield, Zap, Award } from "lucide-react"
 import Link from "next/link"
+import { useGetAllServicesQuery } from "@/redux/features/service/serviceApi"
 
 const services = [
   {
@@ -101,6 +102,8 @@ const services = [
 ]
 
 export default function ServicesPage() {
+  const{data}=useGetAllServicesQuery({})
+  console.log(data)
   const [isVisible, setIsVisible] = useState({})
 
   // Scroll animation observer
@@ -298,104 +301,7 @@ export default function ServicesPage() {
           })}
         </div>
 
-        {/* Popular Packages */}
-        <div className="mt-20">
-          <h2 className="text-4xl font-bold text-center mb-12 gradient-text animate-slide-in-up">Popular Packages</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 stagger-animation">
-            <Card className="border-2 border-blue-200 relative hover-lift card-hover bg-white/90 backdrop-blur-sm">
-              <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-blue-600 animate-heartbeat">
-                Most Popular
-              </Badge>
-              <CardHeader className="text-center pt-8">
-                <CardTitle className="text-2xl gradient-text">Complete Care</CardTitle>
-                <CardDescription>Everything your car needs</CardDescription>
-                <div className="text-4xl font-bold text-blue-600 mt-4 animate-pulse-custom">$120</div>
-                <div className="text-sm text-gray-500 animate-slide-in-up">Save $40</div>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 mb-6">
-                  {["Full Service Wash", "Interior Detailing", "Engine Cleaning", "Headlight Restoration"].map(
-                    (item, index) => (
-                      <li
-                        key={index}
-                        className="flex items-center animate-slide-in-left"
-                        style={{ animationDelay: `${index * 0.1}s` }}
-                      >
-                        <div className="w-2 h-2 bg-blue-600 rounded-full mr-3 animate-pulse-custom"></div>
-                        {item}
-                      </li>
-                    ),
-                  )}
-                </ul>
-                <Button className="w-full btn-animate hover-glow" asChild>
-                  <Link href="/cart?package=complete">Choose Package</Link>
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="hover-lift card-hover bg-white/90 backdrop-blur-sm">
-              <CardHeader className="text-center">
-                <CardTitle className="text-2xl">Essential Clean</CardTitle>
-                <CardDescription>Perfect for regular maintenance</CardDescription>
-                <div className="text-4xl font-bold text-green-600 mt-4 animate-pulse-custom">$65</div>
-                <div className="text-sm text-gray-500 animate-slide-in-up">Save $15</div>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 mb-6">
-                  {["Basic Exterior Wash", "Express Wax", "Interior Vacuum"].map((item, index) => (
-                    <li
-                      key={index}
-                      className="flex items-center animate-slide-in-left"
-                      style={{ animationDelay: `${index * 0.1}s` }}
-                    >
-                      <div className="w-2 h-2 bg-green-600 rounded-full mr-3 animate-pulse-custom"></div>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-                <Button
-                  className="w-full btn-animate hover-glow bg-green-600 hover:bg-green-700"
-                  variant="outline"
-                  asChild
-                >
-                  <Link href="/cart?package=essential">Choose Package</Link>
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="hover-lift card-hover bg-white/90 backdrop-blur-sm">
-              <CardHeader className="text-center">
-                <CardTitle className="text-2xl">Premium Shine</CardTitle>
-                <CardDescription>Ultimate car care experience</CardDescription>
-                <div className="text-4xl font-bold text-purple-600 mt-4 animate-pulse-custom">$200</div>
-                <div className="text-sm text-gray-500 animate-slide-in-up">Save $60</div>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 mb-6">
-                  {["All Services Included", "Clay Bar Treatment", "Premium Protection", "6-Month Warranty"].map(
-                    (item, index) => (
-                      <li
-                        key={index}
-                        className="flex items-center animate-slide-in-left"
-                        style={{ animationDelay: `${index * 0.1}s` }}
-                      >
-                        <div className="w-2 h-2 bg-purple-600 rounded-full mr-3 animate-pulse-custom"></div>
-                        {item}
-                      </li>
-                    ),
-                  )}
-                </ul>
-                <Button
-                  className="w-full btn-animate hover-glow bg-purple-600 hover:bg-purple-700"
-                  variant="outline"
-                  asChild
-                >
-                  <Link href="/cart?package=premium">Choose Package</Link>
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+       
       </div>
     </div>
   )

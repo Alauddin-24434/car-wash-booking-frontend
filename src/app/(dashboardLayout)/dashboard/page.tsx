@@ -27,108 +27,31 @@ import {
 import { useSelector } from "react-redux"
 import { selectCurrentUser } from "@/redux/features/auth/authSlice"
 import ServiceManagement from "@/components/ui/service"
+import SlotManagement from "@/components/slot-management"
 
 export default function DashboardPage() {
   const user = useSelector(selectCurrentUser)
   const [activeTab, setActiveTab] = useState("overview")
 
-  const dashboardData = {
-    stats: {
-      totalRevenue: 15420,
-      totalBookings: 234,
-      activeCustomers: 156,
-      completedServices: 189,
-      pendingBookings: 12,
-      todayRevenue: 1240,
-    },
-    recentBookings: [
-      {
-        id: 1,
-        customer: "Alice Johnson",
-        service: "Full Service Wash",
-        time: "10:00 AM",
-        status: "completed",
-        amount: 80,
-      },
-      {
-        id: 2,
-        customer: "Bob Smith",
-        service: "Basic Exterior Wash",
-        time: "11:30 AM",
-        status: "in-progress",
-        amount: 20,
-      },
-      { id: 3, customer: "Carol Davis", service: "Interior Detailing", time: "2:00 PM", status: "pending", amount: 50 },
-      {
-        id: 4,
-        customer: "David Wilson",
-        service: "Premium Detailing",
-        time: "3:30 PM",
-        status: "pending",
-        amount: 150,
-      },
-    ],
-    monthlyRevenue: [
-      { month: "Jan", revenue: 12000 },
-      { month: "Feb", revenue: 15000 },
-      { month: "Mar", revenue: 18000 },
-      { month: "Apr", revenue: 16000 },
-      { month: "May", revenue: 20000 },
-      { month: "Jun", revenue: 22000 },
-    ],
-    serviceStats: [
-      { name: "Basic Wash", count: 45, percentage: 35 },
-      { name: "Full Service", count: 38, percentage: 30 },
-      { name: "Interior Detail", count: 25, percentage: 20 },
-      { name: "Premium Detail", count: 19, percentage: 15 },
-    ],
-  }
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "completed":
-        return <CheckCircle className="h-4 w-4 text-green-500" />
-      case "in-progress":
-        return <Clock className="h-4 w-4 text-blue-500" />
-      case "pending":
-        return <AlertCircle className="h-4 w-4 text-yellow-500" />
-      default:
-        return <XCircle className="h-4 w-4 text-red-500" />
-    }
-  }
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "completed":
-        return "bg-green-100 text-green-800"
-      case "in-progress":
-        return "bg-blue-100 text-blue-800"
-      case "pending":
-        return "bg-yellow-100 text-yellow-800"
-      default:
-        return "bg-red-100 text-red-800"
-    }
-  }
 
   const renderTabsByRole = () => {
     switch (user?.role) {
       case "admin":
         return (
-          <TabsList className="grid w-full grid-cols-5 mb-8">
+          <TabsList className="grid w-full grid-cols-4 mb-8">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="bookings">Bookings</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
-            <TabsTrigger value="reports">Reports</TabsTrigger>
             <TabsTrigger value="services">Services</TabsTrigger>
+            <TabsTrigger value="slots">Slots</TabsTrigger>
           </TabsList>
         )
       case "user":
         return (
-          <TabsList className="grid w-full grid-cols-4 mb-8">
+          <TabsList className="grid w-full grid-cols-2 mb-8">
             <TabsTrigger value="overview">Profile</TabsTrigger>
             <TabsTrigger value="bookings">Bookings</TabsTrigger>
-             <TabsTrigger value="services">Services</TabsTrigger>
-             <TabsTrigger value="slots">Slots</TabsTrigger>
+           
+             
           </TabsList>
         )
       default:
@@ -187,7 +110,7 @@ export default function DashboardPage() {
             <ServiceManagement />
           </TabsContent>
           <TabsContent value="slots" className="space-y-6">
-            <ServiceManagement />
+            <SlotManagement />
           </TabsContent>
         </Tabs>
       </div>

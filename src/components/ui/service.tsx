@@ -12,7 +12,7 @@ interface Service {
   description: string;
   duration: string;
   price: string;
-  image: string;
+  images: string[];
 }
 
 const ServiceManagement = () => {
@@ -93,7 +93,7 @@ const ServiceManagement = () => {
             {services?.data?.map((service: Service, index: number) => (
               <tr key={service._id} className={`border-b ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}`}>
                 <td className="p-4">
-                  <img src={service.image} alt={service.name} className="h-16 w-16 object-cover rounded-lg" />
+                  <img src={service.images[0]} alt={service.name} className="h-16 w-16 object-cover rounded-lg" />
                 </td>
                 <td className="p-4">
                   <p className="text-sm text-gray-700">{service.name}</p>

@@ -96,7 +96,7 @@ export default function SignupPage() {
       setSuccess("Account created successfully! Redirecting to login...")
 
       setTimeout(() => {
-        router.push("/login?message=Account created successfully. Please sign in.")
+        router.push("/")
       }, 2000)
     } catch (err: any) {
       setError(err?.data?.message || err.message || "Failed to create account.")

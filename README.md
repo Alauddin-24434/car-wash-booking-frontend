@@ -1,36 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚗 Car Wash Booking Management Frontend
 
-## Getting Started
+## Welcome to the frontend of a modern and responsive car wash booking management website. This application, built with Next.js, TypeScript, and Tailwind CSS, allows users to easily book car wash services, manage their appointments, and handle payments.
 
-First, run the development server:
+## 🚀 Features
+
+  - **User Authentication & Role Management**
+  - **Service Booking System**
+  - **Aamarpay Payment Integration**
+  - **Service Management** (Admin-only)
+  - **Appointment Scheduling**
+  - **User Dashboard**
+
+-----
+
+## 🛠 Getting Started
+
+### 1\. Clone the Repository
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/Alauddin-24434/car-wash-booking-frontend.git
+cd car-wash-booking-frontend
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2\. Install Dependencies
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This project uses [pnpm](https://pnpm.io/) (recommended), but you can use npm if needed.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+#### Using pnpm (recommended):
 
-## Learn More
+```bash
+pnpm install
+```
 
-To learn more about Next.js, take a look at the following resources:
+#### Using npm:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1.  **Delete the pnpm lockfile first:**
+    ```bash
+    rm -rf pnpm-lock.yaml
+    ```
+2.  **Then install dependencies:**
+    ```bash
+    npm install
+    ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+> **Warning:** Do **not** mix pnpm and npm in the same project.
 
-## Deploy on Vercel
+-----
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🚀 Running the Project
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Development
+
+```bash
+pnpm run dev
+# or
+npm run dev
+```
+
+### Environment Variables
+
+Create a `.env` file in the root of the project and add the following variables:
+
+```bash
+NEXT_PUBLIC_API_BASE_URL=your backend url here
+JWT_ACCESS_TOKEN_SECRET=your jwt secret here (must be the same as the backend secret)
+```
+
+### Production
+
+```bash
+pnpm run build && pnpm start
+# or
+npm run build && npm start
+```
+
+-----
+
+## 🤝 Contributing
+
+Contributions are welcome\! If you find a bug or have an idea for an improvement, please open an issue or submit a pull request.
+
+-----
+
+## 📫 Contact
+
+For questions or support, please contact [alauddin150900@gmail.com](mailto:alauddin150900@gmail.com).
